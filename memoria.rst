@@ -24,10 +24,10 @@ Modelo da memória
       Representação do espaço e memória do P16 ao nível binário.
 
    O P16 é classificado como um processador de 16 *bits*,
-   porque processa palavras de 16 *bits* (formadas por dois *bytes*).
-   Armazenada em memória, uma palavra de 16 *bits* ocupa duas posições de memória consecutivas.
-   e diz-se alinhada se ocupar como primeira posição, uma posição de endereço par
-   -- o valor do *bit* de menor peso do endereço é zero.
+   porque processa palavras formadas por 16 *bits* -- também designadas por *words*.
+   Armazenada em memória, uma *word* ocupa duas posições de memória consecutivas
+   e diz-se alinhada se ocupar como primeira posição, no sentido crescente dos endereços,
+   uma posição de endereço par -- o valor do *bit* de menor peso do endereço ser zero.
 
    A :numref:`little_endian` mostra o valor numérico 262 (0x0106),
    representado em binário, numa palavra de 16 *bits*, armazenada em memória.
@@ -79,10 +79,11 @@ Acesso a valores em memória
    com um segundo componente que pode ser um registo -- **[rn, rm]**
    ou uma constante -- **[rn, #constant]**.
 
-   Antes da instrução LDR ou STR é necessário carregar o endereço da variável no registo **rn**.
-   Para simplificar, vamos considerar nos exemplos seguintes
+   Num programa, antes da instrução LDR ou STR
+   é necessário carregar o endereço da variável no registo **rn**.
+   Para simplificar, vamos considerar nos exemplos seguintes,
    que se utiliza a variante com constante e que esta tem o valor zero.
-   Situação em que se pode usar a sintaxe ``ldr  rd, [rn]`` ou ``str  rd, [rn]``.
+   -- situação em que se pode usar a sintaxe **ldr  rd, [rn]** ou **str  rd, [rn]**.
 
    .. rubric :: Ler variável de 8 *bits*
 
@@ -107,7 +108,7 @@ Acesso a valores em memória
    A instrução ``ldrb  r0, [r1]`` copia o conteúdo da posição de memória de endereço ``0x0005``
    -- o valor 0x23 -- para os 8 *bits* menos significativos de R0
    e afecta os 8 *bits* mais significativos com zero.
-   Esta variável está neste momento representada com 16 *bits* no registo R0.
+   O valor da variável **x** fica neste momento representado com 16 *bits* no registo R0.
 
    .. rubric :: Ler variável de 16 *bits*
 
@@ -195,7 +196,7 @@ para serem posteriormente operados, devem ser convertidos para representação a
 No caso do tipo ``uint8_t``, como a instrução LDRB coloca a parte alta do registo a zero,
 nada mais há a fazer.
 No caso do tipo ``int8_t``, é necessário propagar o valor do *bit* de sinal
-(posição 7) para todos os bits da posição 8 até à posição 15.
+(posição 7) para todos os *bits* da posição 8 até à posição 15.
 Para tal pode usar-se o seguinte código depois da instrução LDRB: ::
 
    lsl	r0, #8
@@ -203,8 +204,8 @@ Para tal pode usar-se o seguinte código depois da instrução LDRB: ::
 
 Com LSL o *bit* de sinal (posição 7) é deslocado para a posição 15
 e com ASR é recolocado na posição 7.
-A instrução ASR ao deslocar um valor para a direita mantém na posição 15
-o valor original e preenche as posições da 15 até à 7 com esse valor.
+A instrução ``asr  r0, #8`` ao deslocar R0 para a direita mantém na posição 15
+o valor original e preenche as posições até à 7 com esse valor.
 
 .. _carregamento de endereco em registo:
 
@@ -213,10 +214,9 @@ Carregamento de endereço em registo
 
 A solução geral para carregamento de endereços nos registos do processador
 passa por utilizar a instrução **ldr  rd, label**.
-Esta instrução copia um valor a 16 *bits*,
+Esta instrução copia um valor expressoa a 16 *bits*,
 armazenado em memória, no endereço definido por *label*,
 para o registo **rd**.
-Esse valor, pode ser um endereço de memória ou outra constante expressa a 16 *bits*.
 
    .. table:: Carregamento de endereço em registo.
       :widths: auto
@@ -249,26 +249,31 @@ incrementar esse registo;
 voltar a escrever esse registo na variável em memória.
 
 Para aceder à variável (ler – LDR ou escrever – STR) é necessário
-carregar o endereço da variável num registo (o P16 não dispõe de endereçamento directo).
+carregar o endereço da variável num registo porque o P16 não dispõe de endereçamento directo.
 A variável **x** é definida em linguagem *assembly*
 pela label **x:** seguida da diretiva ``.byte 0x55``,
 que significa reservar uma posição de memória inicializada com o valor 0x55.
 A diretiva **.data** indica uma zona de memória para variáveis.
 
-Em linguagem *assembly* uma *label* representa um endereço de memória.
-Neste caso **x:** é equivalente ao endereço da variável **x**.
+Em linguagem *assembly* uma *label* tem um valor associado que é o endereço de memória
+do local onde foi colocada a *label:*.
+
+No exemplo da :numref:`load_address`, o símbolo **x** tem um valor associado
+que é o endereço da posição de memória assinalada por **x:**.
+Essa posição de memória aloja a variável **x** cujo conteúdo inicial é 0x55.
 
 A instrução ``ldr  r1, addressof_x`` carrega em R1 a palavra de 16 *bits*
-alojada em memória na posição assinalada pela *label* **addressof_x:**.
+alojada em memória na posição assinalada pela *label* ``addressof_x:``.
 Esse conteúdo é o endereço da variável **x**, definido pela diretiva ``.word x``,
-que reserva duas posições de memória (16 *bits*) inicializadas com o endereço de **x**.
+que reserva duas posições de memória inicializadas com o valor do simbolo **x**.
 
-Para aceder à posição de memória definida por *label*,
-A instrução **ldr rd,label** usa um método de endereçamento relativo ao PC,
-para ler da memória definida por *label*.
-O código binário desta instrução tem um campo de 6 *bits* (imm6) para codificar,
-em número de *words* (palavras de 16 *bits*), a distância, no sentido crescente,
-a que essa *label* se encontra da instrução LDR.
+A instrução **ldr  rd,label** usa um método de endereçamento relativo ao PC,
+para ler da posição de memória definida por *label*.
+O código binário desta instrução, :numref:`ldr_label`,
+tem um campo de 6 *bits* (imm6) para codificar,
+a distância no espaço de endereçamento a que a *label* se encontra da instrução LDR,
+em número de *words* (palavras de 16 *bits*),
+no sentido crescente dos endereços.
 
    .. figure:: figures/ldr_label.png
       :name: ldr_label
@@ -277,16 +282,15 @@ a que essa *label* se encontra da instrução LDR.
 
       Carregamento em registo do endereço de uma variável
 
-A instrução ``ldr  r1, addressof_x`` carrega em R1 o endereço da variável **x**
-(endereço 0x6037).
-Este endereço está armazenado em memória
-na posição indicada por ``addressof_x`` (endereço 0x4022).
-Esta instrução determina o endereço de ``addressof_x:`` (0x4022)
-adicionando ao PC (0x400a) o dobro do campo **imm6**
-(0x4022 = 0x400a + 0x0b * 2).
-O valor **imm6** é metade da diferença entre o endereço de ``addressof_x``
-e o PC ((0x4022 – 0x400a) / 2).
-(Na fase de execução de uma instrução, o PC contém o endereço da instrução seguinte.)
+A instrução ``ldr  r1, addressof_x`` carrega 0x6037 em R1 (endereço da variável **x**).
+Este valor está armazenado em memória no endereço 0x4022 (posição indicada por ``addressof_x:``).
+Esta instrução determina o valor 0x4022 adicionando ao valor atual do PC (0x400a)
+o dobro do campo **imm6** (0xb) (0x4022 = 0x400a + 0x0b * 2).
+Na fase de codificação binária do programa, o valor **imm6** é calculado como
+metade da diferença entre o endereço de ``addressof_x`` e o valor atual do PC ((0x4022 – 0x400a) / 2).
+Na fase de execução de uma instrução, o PC contém o endereço da instrução seguinte.
+A instrução ``ldr  r1, addressof_x`` ocupa o endereço 0x4008 mas na altura
+em que está a ser executada o valor do PC é 0x400a.
 
 Valores em *array*
 ==================
@@ -296,23 +300,26 @@ alojadas em posições de memória contíguas.
 As posições do *array* são definidas pelo índice.
 O índice 0 corresponde ao endereço mais baixo e os restantes índices a endereços mais altos.
 Os acessos aos elementos do *array* são realizados
-pelas seguintes instruções de endereçamento baseado -- indexado: ::
+pelas instruções de endereçamento baseado e indexado: ::
 
-   ldr rd, [rn, rm]   ldr rd, [rn, imm3*2]
-   str rd, [rn, rm]   str rd, [rn, imm3*2]
+   ldr rd, [rn, rm]   ldr rd, [rn, #imm4]
+   str rd, [rn, rm]   str rd, [rn, #imm4]
 
-se se tratar de *array* de *words* ou
+se se tratar de *array* de *words* ou ::
 
-   ldrb rd, [rn, rm]   ldrb rd, [rn, imm3]
-   strb rd, [rn, rm]   strb rd, [rn, imm3]
+   ldrb rd, [rn, rm]   ldrb rd, [rn, #imm3]
+   strb rd, [rn, rm]   strb rd, [rn, #imm3]
 
 se se tratar de um *array* de *bytes*.
 
-Estas instruções determinam o endereço de acesso a memória somando a **rn**
-uma segunda componente: **rm** ou uma constante (**imm3*2** ou **imm3**).
+Estas instruções determinam o endereço de acesso à memória somando a **rn**
+uma segunda componente: **rm** ou uma constante (**imm4** ou **imm3**).
 Em **rn** carrega-se o endereço da primeira posição do *array*
-e através da segunda componente (**rm**, **imm3*2** ou **imm3**)
+e através da segunda componente (**rm**, **imm4** ou **imm3**)
 define-se a posição a que se pretende aceder.
+
+**imm4** e **imm3** representam valores constantes representados com quatro ou três *bits*, respetivamente.
+
 
    .. table:: Acesso a *array* de *bytes*.
       :widths: auto
@@ -328,8 +335,7 @@ define-se a posição a que se pretende aceder.
       |                              |        mov   r4, #10          |                                      |
       |    for (uint16_t i = 0;      |        b     for_cond         |                                      |
       |                 i < 10; ++i) |    for:                       |                                      |
-      |        a += array[i]         |        add   r3, r1, r1       |                                      |
-      |                              |        ldr   r3, [r0, r3]     |                                      |
+      |        a += array[i]         |        ldrb  r3, [r0, r1]     |                                      |
       |                              |        add   r2, r2, r3       |                                      |
       |                              |        add   r1, r1, #1       |                                      |
       |                              |    for_cond:                  |                                      |
@@ -337,7 +343,7 @@ define-se a posição a que se pretende aceder.
       |                              |        blo   for              |                                      |
       +------------------------------+-------------------------------+--------------------------------------+
 
-No programa :numref:`array_bytes` (b) assume-se que o endereço inicial do *array*
+No programa (b) da :numref:`array_bytes` assume-se que o endereço inicial do *array*
 foi previamente carregado no registo R0 (endereço 0x4078).
 Cada posição deste *array* ocupa uma posição de memória.
 O endereço de ``array[i]`` é determinado pela instrução ``ldrb  r3, [r0, r1]``

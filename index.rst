@@ -19,7 +19,7 @@ P16 - Programação em *Assembly*
    introducao.rst
    valores.rst
    controlo.rst
-.. memoria.rst
+   memoria.rst
 .. funcao.rst
 .. program.rst
 .. exemplos.rst
