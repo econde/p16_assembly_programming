@@ -54,7 +54,7 @@ Considere-se a sequência de duas chamadas à função ``void delay()``.
 
 A chamada a função sem parâmetros e sem valor de retorno
 corresponde apenas à execução da instrução bl.
-No programa da ::numref:`call_function_void` (b), a instrução ``bl delay`` (linhas 2 e 4)
+No programa da :numref:`call_function_void` (b), a instrução ``bl delay`` (linhas 2 e 4)
 salta para o endereço indicado pela *label* *delay*.
 
    .. table:: Programa de função sem parâmetros.
@@ -138,7 +138,7 @@ O que corresponde a colocar os valores dos argumentos no local que dá suporte a
 Nesta função utilizam-se o registo R0 para passar o primeiro argumento
 e o registo R1 para passar o segundo argumento.
 
-No programa da :numref:`call_function_param` (b), na primeira chamada,
+No programa (b) da :numref:`call_function_param`, na primeira chamada,
 os argumentos 4 e 10, são carregados em R0 e R1 (linhas 1 e 2), respectivamente;
 na segunda chamada os argumentos 8 e 12, são carregados em R0 e R1 (linhas 5 e 6), respectivamente.
 
@@ -166,11 +166,11 @@ na segunda chamada os argumentos 8 e 12, são carregados em R0 e R1 (linhas 5 e 
       | \(a\)                                        | \(b\)                         |
       +----------------------------------------------+-------------------------------+
 
-No programa :numref:`function_param` (b) assume-se que
+No (b) programa :numref:`function_param` assume-se que
 os registos de suporte aos parâmetros – R0 e R1 – já contêm os argumentos.
 A variável local **product** como não prevalece para além do âmbito desta função
 é suportada no registo R2, entre as linhas 2 e 10.
-O valor da função -- o resultado da multiplicação -- é depositado no registo R0 (linha 10).
+O valor de retorno da função -- o resultado da multiplicação -- é depositado no registo R0 (linha 10).
 
    .. figure:: figures/bl2.png
       :name: bl2
@@ -201,7 +201,7 @@ e só se consegue colocar um novo objecto sobre o topo da pilha
 
 O P16 dispõe de um registo específico e duas instruções para manusear o *stack*.
 O registo R13, neste contexto designado *stack pointer* (SP),
-destina-se a guardar permanentemente o endereço corrente do topo do stack.
+destina-se a guardar permanentemente o endereço corrente do topo do *stack*.
 A instrução **push** coloca o conteúdo de um registo no topo do *stack*
 e a instrução **pop** retira um valor do topo do *stack*,
 colocando-o num registo.
@@ -213,7 +213,7 @@ A instrução **push** começa por decrementar o registo SP de duas unidades
 e em seguida transfere o conteúdo do registo indicado para a posição do *stack*
 definida por SP.
 
-A instrução **push  rs** é equivalente à sequências ::
+A instrução **push  rs** é equivalente à sequência ::
 
    sub  sp, sp, #2
    str  rs, [sp]
@@ -223,7 +223,7 @@ Começa por incrementar o registo SP de duas unidades
 e em seguida transfere o conteúdo da posição do *stack*,
 definida por SP, para o registo indicado.
 
-A instrução **pop  rd** é equivalente à sequências ::
+A instrução **pop  rd** é equivalente à sequência ::
 
    ldr  rd, [sp]
    add  sp, sp, #2
@@ -231,7 +231,7 @@ A instrução **pop  rd** é equivalente à sequências ::
 .. figure:: figures/push.png
    :name: push
    :align: center
-   :scale: 20%
+   :scale: 24%
 
    Ilustração do funcionamento da instrução **push**
 
@@ -242,13 +242,13 @@ por decrementar o SP de duas unidades passando para 0x4006.
 Em seguida escreve o *byte* menos significativo de R11 (0x55)
 na posição de endereço 0x4006
 e o byte mais significativo de R11 (0x33) na posição de endereço 0x4007.
-O posicionamento dos *bytes* segue o critério little-ended.
+O posicionamento dos *bytes* segue o critério *little-ended*.
 
 
 .. figure:: figures/pop.png
    :name: pop
    :align: center
-   :scale: 20%
+   :scale: 24%
 
    Ilustração do funcionamento da instrução **pop**
 

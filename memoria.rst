@@ -347,7 +347,7 @@ No programa (b) da :numref:`array_bytes` assume-se que o endereço inicial do *a
 foi previamente carregado no registo R0 (endereço 0x4078).
 Cada posição deste *array* ocupa uma posição de memória.
 O endereço de ``array[i]`` é determinado pela instrução ``ldrb  r3, [r0, r1]``
-ao somar o índice i, em R1, ao endereço base do *array* em r0.
+adicionando o índice i, em R1, ao endereço base do *array* em r0.
 
 
    .. table:: Acesso a *array* de *words*.
