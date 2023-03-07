@@ -19,27 +19,27 @@ e a variante ``intXX_t`` representa valores no conjunto dos números relativos.
    :align: center
    :name: tipos_c_kotlin
 
-   +--------------------------------+------------------------------------+--------------------------------------+
-   | Linguagem Kotlin               |           Linguagem C              | Processador                          |
-   +===============+================+===============+====================+============+============+============+
-   | **Relativos** | **Naturais**   | **Relativos** | **Naturais**       | **16 bit** | **32 bit** | **64 bit** |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ``Byte``      | ``UByte``      | ``char``      | ``unsigned char``  | 1          | 1          | 1          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ``Short``     | ``UShort``     | ``short``     | ``unsigned short`` | 2          | 2          | 2          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ``Int``       | ``UInt``       | ``int``       | ``unsigned``       | 2          | 4          | 4          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ``Long``      | ``ULong``      | ``long``      | ``unsigned long``  | 4          | 4          | 8          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ..            | ..             | ``int8_t``    | ``uint8_t``        | 1          | 1          | 1          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ..            | ..             | ``int16_t``   | ``uint16_t``       | 2          | 2          | 2          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ..            | ..             | ``int32_t``   | ``uint32_t``       | 4          | 4          | 4          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
-   | ..            | ..             | ``int64_t``   | ``uint64_t``       | 8          | 8          | 8          |
-   +---------------+----------------+---------------+--------------------+------------+------------+------------+
+   +--------------------------------+-----------------------------------------------+--------------------------------------+
+   | Linguagem Kotlin               |           Linguagem C                         | Processador                          |
+   +===============+================+======================+========================+============+============+============+
+   | **Relativos** | **Naturais**   | **Relativos**        | **Naturais**           | **16 bit** | **32 bit** | **64 bit** |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ``Byte``      | ``UByte``      | ``signed char``      | ``unsigned char``      | 1          | 1          | 1          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ``Short``     | ``UShort``     | ``signed short int`` | ``unsigned short int`` | 2          | 2          | 2          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ``Int``       | ``UInt``       | ``signed int``       | ``unsigned int``       | 2          | 4          | 4          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ``Long``      | ``ULong``      | ``signed long int``  | ``unsigned long int``  | 4          | 4          | 8          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ..            | ..             | ``int8_t``           | ``uint8_t``            | 1          | 1          | 1          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ..            | ..             | ``int16_t``          | ``uint16_t``           | 2          | 2          | 2          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ..            | ..             | ``int32_t``          | ``uint32_t``           | 4          | 4          | 4          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
+   | ..            | ..             | ``int64_t``          | ``uint64_t``           | 8          | 8          | 8          |
+   +---------------+----------------+----------------------+------------------------+------------+------------+------------+
 
 O domínio de valores representável depende da dimensão da palavra em número de *bits*.
 Na :numref:`tipos_dimensoes` apresentam-se os dimínios de valores representáveis
@@ -421,7 +421,7 @@ Deslocar um número variável de posições
    quatro passos (instruções ``lsl r0, r0, #X`` (linhas 4, 8, 12 e 16).
    Em cada passo deslocar deslocar uma, duas, quatro ou oito posições,
    perfazendo um máximo de quinze posições.
-   
+
    O número de posições a deslocar é representado pelos quatro *bits* de menor peso de R1.
    Por exemplo, no terceiro passo (linha 10 a 12) é testado o *bit* de peso dois de R1.
    Se este *bit* for 1, R0 é deslocado quatro posições. Se for 0, R0 não é deslocado.
@@ -569,7 +569,7 @@ Multiplicar por constante
 Conversão entre tipos numéricos
 -------------------------------
 
-   A representação dos tipos numéricos diferem entre si no número de *bits* 
+   A representação dos tipos numéricos diferem entre si no número de *bits*
    e na representação de sinal.
    Existe por vezes a necessidade de alterar a representação de valores.
    Por exemplo, afetar um valor guardado numa variável representada a oito *bits* (int8_t)
@@ -584,24 +584,24 @@ Conversão sem perda de informação
    Para manter a mesma representação numérica os *bits* de maior peso
    recebem o valor zero no caso de valores naturais
    ou o valor do *bit* de sinal no caso de valores relativos.
-   
+
    Nos exemplos da :numref:`convert_to_wider` a conversão de 8 para 16 *bits* dá-se
    ao carregar as contantes nos registos do processador.
    Como o P16 realiza apenas operações a 16 *bits*,
    os valores originalmente representados 8 *bits* devem ser representados a 16 *bits*
    ao serem carregados nos registos do processador.
-   
+
    Nos casos  (a) e (b) da :numref:`convert_to_wider`, o aumento para 16 *bits*
    consiste em acrescentar zero na parte alta de R0.
    Esse resultado é obtido pela funcionamento das instruções ``mov  r0, #10`` e ``mov  r0, #22``
    que afetam a parte alta de R0 com zero.
-   
+
    Nos casos (c) e (d) da :numref:`convert_to_wider`, o aumento para 16 *bits*
    consiste em propagar o *bit* de sinal para a parte alta do destino. No caso (c)
    a parte alta de R0 recebe 0xff porque se trata de representar o valor -3.
    No caso (d) a parte alta da variável, representada em R2, recebe em todas
    as posições um valor igual ao *bit* de maior peso de R0 (*bit* de sinal do valor original).
-   
+
    .. table:: Conversão de tipo menor para tipo maior
       :widths: auto
       :align: center
