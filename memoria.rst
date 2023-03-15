@@ -64,25 +64,26 @@ Acesso a valores em memória
    No P16, o acesso a valores em memória faz-se utilizando as instruções LDR e STR.
    A  instrução LDR copia dados da memória para os registos
    e a instrução STR copia dados dos registos para a memória.
-   Nestas instruções, os parâmetros são um registo e a uma posição de memória.
+   Os parâmetros destas instruções são um registo e uma posição de memória.
    A especificação do endereço da posição de memória é feita através de registos
    -- endereçamento indirecto. Este modo de endereçamento consiste em utilizar
-   o conteúdo de registos do processador como endereço de memória. ::
+   o conteúdo de registos como endereço de memória. ::
 
       ldr    rd, [rn, ...]
       str    rs, [rn, ...]
 
    Na instrução LDR, o registo **rd** é quem vai receber os dados a ler da memória.
    Na instrução STR, o registo **rs** é quem vai fornecer os dados a escrever na memória.
-   Em ambas as instruções, o endereço é definido pela expressão entre parêntesis rectos --
+   Em ambas as instruções, o endereço da memória é definido pela expressão entre parêntesis rectos --
    **[rn, ...]**. O endereço é calculado pela adição do conteúdo de **rn**
    com um segundo componente que pode ser um registo -- **[rn, rm]**
    ou uma constante -- **[rn, #constant]**.
 
    Num programa, antes da instrução LDR ou STR
    é necessário carregar o endereço da variável no registo **rn**.
-   Para simplificar, vamos considerar nos exemplos seguintes,
-   que se utiliza a variante com constante e que esta tem o valor zero.
+   
+   Para simplificar, vamos considerar nos exemplos desta secção,
+   que se utiliza a variante com constante e que esta tem o valor zero
    -- situação em que se pode usar a sintaxe **ldr  rd, [rn]** ou **str  rd, [rn]**.
 
    .. rubric :: Ler variável de 8 *bits*
@@ -184,6 +185,98 @@ Acesso a valores em memória
    para a posição de memória de endereço 0x0006
    e o valor dos 8 *bits* mais significativos de R0 (valor 0x67)
    para a posição de memória de endereço 0x0007 – posicionamento *little ended*.
+
+Valores em *array*
+------------------
+
+*Arrays* são sequências de variáveis do mesmo tipo,
+alojadas em posições de memória contíguas.
+As posições do *array* são definidas pelo índice.
+O índice 0 corresponde ao endereço mais baixo e os restantes índices a endereços mais altos.
+Os acessos aos elementos do *array* são realizados
+pelas instruções de endereçamento baseado e indexado: ::
+
+   ldr rd, [rn, rm]   ldr rd, [rn, #imm4]
+   str rd, [rn, rm]   str rd, [rn, #imm4]
+
+se se tratar de *array* de *words* ou ::
+
+   ldrb rd, [rn, rm]   ldrb rd, [rn, #imm3]
+   strb rd, [rn, rm]   strb rd, [rn, #imm3]
+
+se se tratar de um *array* de *bytes*.
+
+Estas instruções determinam o endereço de acesso à memória somando a **rn**
+uma segunda componente: **rm** ou uma constante (**imm4** ou **imm3**).
+Em **rn** carrega-se o endereço da primeira posição do *array*
+e através da segunda componente (**rm**, **imm4** ou **imm3**)
+define-se a posição a que se pretende aceder.
+
+**imm4** e **imm3** representam valores constantes representados com quatro ou três *bits*, respetivamente.
+
+
+   .. table:: Acesso a *array* de *bytes*.
+      :widths: auto
+      :align: center
+      :name: array_bytes
+
+      +---------------------------------------------+-------------------------------+--------------------------------------+
+      | .. code-block:: c                           | .. code-block:: asm           | .. image:: figures/array_bytes.png   |
+      |                                             |                               |    :scale: 6%                        |
+      |    uint8_t array[] = {2, 0x23, 0x54, 0x10}; |    ; r0 = address of array    |                                      |
+      |    uint16_t a;                              |    ; r1 = i r2 = a            |                                      |
+      |                                             |        mov   r1, #0           |                                      |
+      |    for (uint16_t i = 0; i < 10; ++i)        |        mov   r4, #10          |                                      |
+      |        a += array[i]                        |        b     for_cond         |                                      |
+      |                                             |    for:                       |                                      |
+      |                                             |        ldrb  r3, [r0, r1]     |                                      |
+      |                                             |        add   r2, r2, r3       |                                      |
+      |                                             |        add   r1, r1, #1       |                                      |
+      |                                             |    for_cond:                  |                                      |
+      |                                             |        cmp   r1, r4           |                                      |
+      |                                             |        blo   for              |                                      |
+      +---------------------------------------------+-------------------------------+--------------------------------------+
+
+No programa (b) da :numref:`array_bytes` assume-se que o endereço inicial do *array*
+foi previamente carregado no registo R0 (endereço 0x4078).
+Cada posição deste *array* ocupa uma posição de memória.
+O endereço de ``array[i]`` é determinado pela instrução ``ldrb  r3, [r0, r1]``
+adicionando o índice i, em R1, ao endereço base do *array* em R0.
+
+
+   .. table:: Acesso a *array* de *words*.
+      :widths: auto
+      :align: center
+      :name: array_words
+
+      +----------------------------------------------------+-------------------------------+--------------------------------------+
+      | .. code-block:: c                                  | .. code-block:: asm           | .. image:: figures/array_words.png   |
+      |                                                    |                               |    :scale: 5%                        |
+      |    int16_t array[] = {2, 0x5022, 0x56, 0x1011};    |    ; r0 = address of array    |                                      |
+      |    int16_t a;                                      |    ; r1 = i r2 = a            |                                      |
+      |                                                    |        mov   r1, #0           |                                      |
+      |    for (uint16_t i = 0; i < 10; ++i)               |        mov   r4, #10          |                                      |
+      |        a += array[i]                               |        b     for_cond         |                                      |
+      |                                                    |    for:                       |                                      |
+      |                                                    |        add   r3, r1, r1       |                                      |
+      |                                                    |        ldr   r3, [r0, r3]     |                                      |
+      |                                                    |        add   r2, r2, r3       |                                      |
+      |                                                    |        add   r1, r1, #1       |                                      |
+      |                                                    |    for_cond:                  |                                      |
+      |                                                    |        cmp   r1, r4           |                                      |
+      |                                                    |        blo   for              |                                      |
+      +----------------------------------------------------+-------------------------------+--------------------------------------+
+
+No programa da :numref:`array_words`, os elementos do *array* são valores representados a 16 *bits*
+-- ocupam duas posições de memória.
+O acesso ao elemento ``array[i]`` é realizado pela instrução ``ldr  r3, [r0, r3]``
+que acede à posição de memória que resulta da soma de R0 com R3.
+Assume-se que R0 tem o endereço da primeira posição do *array* (endereço 0x4076)
+e R3 a distância, em posições de memória,
+entre o endereço de ``array[i]`` e o endereço de ``array[0]``.
+Esta distância é definida pela instrução ``add  r3, r1, r1``
+que multiplica o índice **i**, em R1, pela dimensão de cada elemento do *array* (2 bytes).
+
 
 Carregamento de valores com aumento de *bits*
 ---------------------------------------------
@@ -292,93 +385,3 @@ Na fase de execução de uma instrução, o PC contém o endereço da instruçã
 A instrução ``ldr  r1, addressof_x`` ocupa o endereço 0x4008 mas na altura
 em que está a ser executada o valor do PC é 0x400a.
 
-Valores em *array*
-==================
-
-*Arrays* são sequências de variáveis do mesmo tipo,
-alojadas em posições de memória contíguas.
-As posições do *array* são definidas pelo índice.
-O índice 0 corresponde ao endereço mais baixo e os restantes índices a endereços mais altos.
-Os acessos aos elementos do *array* são realizados
-pelas instruções de endereçamento baseado e indexado: ::
-
-   ldr rd, [rn, rm]   ldr rd, [rn, #imm4]
-   str rd, [rn, rm]   str rd, [rn, #imm4]
-
-se se tratar de *array* de *words* ou ::
-
-   ldrb rd, [rn, rm]   ldrb rd, [rn, #imm3]
-   strb rd, [rn, rm]   strb rd, [rn, #imm3]
-
-se se tratar de um *array* de *bytes*.
-
-Estas instruções determinam o endereço de acesso à memória somando a **rn**
-uma segunda componente: **rm** ou uma constante (**imm4** ou **imm3**).
-Em **rn** carrega-se o endereço da primeira posição do *array*
-e através da segunda componente (**rm**, **imm4** ou **imm3**)
-define-se a posição a que se pretende aceder.
-
-**imm4** e **imm3** representam valores constantes representados com quatro ou três *bits*, respetivamente.
-
-
-   .. table:: Acesso a *array* de *bytes*.
-      :widths: auto
-      :align: center
-      :name: array_bytes
-
-      +------------------------------+-------------------------------+--------------------------------------+
-      | .. code-block:: c            | .. code-block:: asm           | .. image:: figures/array_bytes.png   |
-      |                              |                               |    :scale: 6%                        |
-      |    uint8_t array[] = {       |    ; r0 = address of array    |                                      |
-      |        2, 0x23, 0x54, 0x10}; |    ; r1 = i r2 = a            |                                      |
-      |    uint16_t a;               |        mov   r1, #0           |                                      |
-      |                              |        mov   r4, #10          |                                      |
-      |    for (uint16_t i = 0;      |        b     for_cond         |                                      |
-      |                 i < 10; ++i) |    for:                       |                                      |
-      |        a += array[i]         |        ldrb  r3, [r0, r1]     |                                      |
-      |                              |        add   r2, r2, r3       |                                      |
-      |                              |        add   r1, r1, #1       |                                      |
-      |                              |    for_cond:                  |                                      |
-      |                              |        cmp   r1, r4           |                                      |
-      |                              |        blo   for              |                                      |
-      +------------------------------+-------------------------------+--------------------------------------+
-
-No programa (b) da :numref:`array_bytes` assume-se que o endereço inicial do *array*
-foi previamente carregado no registo R0 (endereço 0x4078).
-Cada posição deste *array* ocupa uma posição de memória.
-O endereço de ``array[i]`` é determinado pela instrução ``ldrb  r3, [r0, r1]``
-adicionando o índice i, em R1, ao endereço base do *array* em r0.
-
-
-   .. table:: Acesso a *array* de *words*.
-      :widths: auto
-      :align: center
-      :name: array_words
-
-      +-------------------------------+-------------------------------+--------------------------------------+
-      | .. code-block:: c             | .. code-block:: asm           | .. image:: figures/array_words.png   |
-      |                               |                               |    :scale: 5%                        |
-      |    int16_t array[] = { 2,     |    ; r0 = address of array    |                                      |
-      |        0x5022, 0x56, 0x1011}; |    ; r1 = i r2 = a            |                                      |
-      |                               |        mov   r1, #0           |                                      |
-      |    int16_t a;                 |        mov   r4, #10          |                                      |
-      |                               |        b     for_cond         |                                      |
-      |    for (uint16_t i = 0;       |    for:                       |                                      |
-      |                 i < 10; ++i)  |        add   r3, r1, r1       |                                      |
-      |        a += array[i]          |        ldr   r3, [r0, r3]     |                                      |
-      |                               |        add   r2, r2, r3       |                                      |
-      |                               |        add   r1, r1, #1       |                                      |
-      |                               |    for_cond:                  |                                      |
-      |                               |        cmp   r1, r4           |                                      |
-      |                               |        blo   for              |                                      |
-      +-------------------------------+-------------------------------+--------------------------------------+
-
-No programa da :numref:`array_words`, os elementos do *array* são valores representados a 16 *bits*
--- ocupam duas posições de memória.
-O acesso ao elemento ``array[i]`` é realizado pela instrução ``ldr  r3, [r0, r3]``
-que acede à posição de memória que resulta da soma de R0 com R3.
-Assume-se que R0 tem o endereço da primeira posição do *array* (endereço 0x4076)
-e R3 a distância, em posições de memória,
-entre o endereço de ``array[i]`` e o endereço de ``array[0]``.
-Esta distância é definida pela instrução ``add  r3, r1, r1``
-que multiplica o índice **i**, em R1, pela dimensão de cada elemento do *array* (2 bytes).

@@ -21,7 +21,7 @@ P16 - Programação em *Assembly*
    controlo.rst
    memoria.rst
    funcao.rst
-.. program.rst
-.. exemplos.rst
+   programa.rst
+   exemplos.rst
 
 * :ref:`search`

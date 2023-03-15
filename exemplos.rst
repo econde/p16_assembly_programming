@@ -1,10 +1,9 @@
 Exemplos de programação
 =======================
 
-Nos exemplos de programação que se seguem foi suprimido o código de arranque.
+Nos programas de exemplo que se seguem foi suprimido o código de arranque.
 Para gerar um executável deve juntar-se
-o a definição das secções **.startup** e **.stack**
-apresentadas na secção :ref:`codigo de arranque` deste documento.
+o código apresentado na secção :ref:`codigo de arranque` deste documento.
 
 .. _multiply:
 
@@ -58,8 +57,6 @@ Estes argumentos são carregados no registos R0 e R1 (linhas 23 a 26)
 e o resultado é guardado na variável **p** (linhas 28 e 29)
 como explicado em :ref:`valores em memoria`.
 
-
-
 .. table::
    :widths: auto
    :align: center
@@ -111,12 +108,8 @@ A assunção de que os argumentos estão presentes em R0 e R1
    :linenos:
    :name: multiply5
 
-
 **Código fonte:** :download:`multiply.s<code/multiply_shift_add/multiply.s>`
 
-**Geração do executável:** ::
-
-   pas multiply.s
 
 
 Divisão
@@ -125,56 +118,189 @@ Divisão
 O programa seguinte implementa o algoritmo de divisão *shift-and-subtract*.
 Este algoritmo executa um número de iterações igual ao número de bits dos operandos.
 
+
+
 Pesquisar um valor num *array*
 ------------------------------
 
-Neste exemplo é apresentada a programação de uma função
-que procura um dado valor num *array* de valores numéricos (**search**).
-Caso encontre retorna o indíce da posição onde encontrou
-caso não encontre retorna -1.
+Neste exemplo é apresentada a programação da função **search**
+que procura o valor ``value`` no *array* ``array`` com ``array_size`` elementos.
+Caso encontre retorna o indíce da posição onde encontrou,
+caso não encontre retorna -1. ::
+
+   int16_t search(uint16_t array[], uint8_t array_size, uint16_t value);
 
 Na :numref:`search1` é apresentado um programa de utilização da função
 **search** com duas invocações.
 
 .. literalinclude:: code/search/search.s
    :language: c
-   :lines: 26-34
-   :caption: Procura um valor num *array*
+   :lines: 26-33
+   :caption: Chamada da função **search** em linguagem C
    :linenos:
    :name: search1
 
 Na :numref:`search2` é apresentada uma tradução do programa da :numref:`search1`
-para liguagem *assembly*.
-
-Da linha 1 até à linha 16 apresenta-se a definicão das variáveis **table1**, **table2**, **p** e **q**.
+para liguagem *assembly*. Da linha 1 até à linha 14 apresenta-se a definicão
+dos *arrays* **table1** e **table2**, e das variáveis **p** e **q**.
 A escrita de sucessivos valores como argumento da diretiva **.word** corresponde
 a reservar em memória uma sequência de *words* iniciadas com esses valores.
 As *labels* **table1_end** e **table2_end** são utilizadas como referências
-no cálculo da dimensão dos *arrays*.
-
-Por exemplo, a diferença ``table1_end - table1`` dá o número de posições de memória
-ocupadas por ``table1``. O número de posições deste *array* é metade deste valor,
-porque cada elemento ocupa duas posições de memória (.word).
+no cálculo da dimensão dos *arrays* **table1** e **table2**.
+A diferença ``table1_end - table1`` é o número de posições de memória
+ocupadas pelo *array* **table1**. O número de elementos é metade deste valor,
+porque cada elemento ocupa duas posições de memória (linhas 21 e 28).
 
 A passagem de um *array* como argumento de uma função,
 concretiza-se carregando o endereço da primeira posição do *array*
 no registo correspondente à posição do parâmetro (linhas 21 e 28).
-Esta carregamento utiliza o método explicado em :ref:`carregamento de endereco em registo`.
+Este carregamento utiliza o método explicado em :ref:`carregamento de endereco em registo`.
 
 .. literalinclude:: code/search/search.s
    :language: asm
-   :lines: 36-78
-   :caption: Chamada da função de procura em *assembly*
+   :lines: 35-68
+   :caption: Chamada da função **search** em linguagem *assembly*
    :linenos:
    :name: search2
 
+.. literalinclude:: code/search/search.s
+   :language: c
+   :lines: 80-87
+   :caption: Função **search** em linguagem C
+   :linenos:
+   :name: search3
 
+Na :numref:`search3` os parâmetros da função **search**
+assim como a variável local **i** são assinalados com a
+indicação dos registos que os suportam.
+Por exemplo, na linha 1 ``<r0> uint16_t array[]``
+significa que o argumento deste parâmetro é recebido no registo R0.
+
+O registo R3 suporta a variável *i* que é usada como índice de acesso ao array.
+Como os elementos do *array* ocupam duas posições de memória,
+é necessário multiplicar R3 por dois no cálculo do endereço de cada posição ``a[i]``.
+A instrução ``add  r4, r3, r3`` realiza essa multiplocação deixamdo em R4 o valor de R3 * 2.
+
+O registo R4 foi preservado em cumprimento da convenção de :ref:`utilizacao dos registos`.
+
+.. literalinclude:: code/search/search.s
+   :language: asm
+   :lines: 90-113
+   :caption: Função **search** em linguagem *assembly*
+   :linenos:
+   :name: search4
+
+**Código fonte:** :download:`search.s<code/search/search.s>`
 
 Ordenar um *array* de valores inteiros
 --------------------------------------
 
+O programa seguinte realiza a ordenação de um *array* de números relativos
+por ordem crescente, utilizando uma variante do algoritmo de ordenação *bubble sort*.
+
+.. literalinclude:: code/bubble_sort/bubble_sort.s
+   :language: c
+   :lines: 27-33
+   :caption: Chamada da função bubble_sort em linguagem C
+   :linenos:
+   :name: bubble_sort1
+
+.. literalinclude:: code/bubble_sort/bubble_sort.s
+   :language: asm
+   :lines: 35-51
+   :caption: Chamada da função bubble_sort em linguagem *assembly*
+   :linenos:
+   :name: bubble_sort2
+
+.. literalinclude:: code/bubble_sort/bubble_sort.s
+   :language: c
+   :lines: 54-67
+   :caption: Função de ordenação de *array* de inteiros em linguagem C
+   :linenos:
+   :name: bubble_sort3
+
+.. literalinclude:: code/bubble_sort/bubble_sort.s
+   :language: asm
+   :lines: 70-104
+   :caption: Função de ordenação de *array* de inteiros em linguagem *assembly*
+   :linenos:
+   :name: bubble_sort4
+
 Chamadas encadeadas de funções
 ------------------------------
 
+Histograma de vogais
+....................
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: c
+   :lines: 129-144
+   :caption: Chamada da função histogram_vowel em linguagem C
+   :linenos:
+   :name: vowel1
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: asm
+   :lines: 146-205
+   :caption: Chamada da função histogram_vowel em linguagem *assembly*
+   :linenos:
+   :name: vowel2
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: c
+   :lines: 83-91
+   :caption: Função histogram_vowel em linguagem C
+   :linenos:
+   :name: vowel3
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: asm
+   :lines: 93-124
+   :caption: Função histogram_vowel em linguagem *assembly*
+   :linenos:
+   :name: vowel4
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: c
+   :lines: 26-43
+   :caption: Função find_vowel em linguagem C
+   :linenos:
+   :name: vowel5
+
+.. literalinclude:: code/histogram/vowel.s
+   :language: asm
+   :lines: 45-80
+   :caption: Função find_vowel em linguagem *assembly*
+   :linenos:
+   :name: vowel6
+
 Chamada recursiva
 -----------------
+
+.. literalinclude:: code/factorial/factorial_asm.s
+   :language: c
+   :lines: 27-33
+   :caption: Chamada da função factorial em linguagem C
+   :linenos:
+   :name: bubble_sort1
+
+.. literalinclude:: code/factorial/factorial_asm.s
+   :language: asm
+   :lines: 35-67
+   :caption: Chamada da função factorial em linguagem *assembly*
+   :linenos:
+   :name: bubble_sort2
+
+.. literalinclude:: code/factorial/factorial_asm.s
+   :language: c
+   :lines: 71-78
+   :caption: Função factorial em linguagem C
+   :linenos:
+   :name: bubble_sort3
+
+.. literalinclude:: code/factorial/factorial_asm.s
+   :language: asm
+   :lines: 80-101
+   :caption: Função factorial linguagem *assembly*
+   :linenos:
+   :name: bubble_sort4

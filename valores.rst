@@ -157,7 +157,7 @@ para valores maiores utiliza-se uma sequência **mov - movt**.
    |        |    #define   VALUE -2000         |    ;a = r0                       |
    | \(d\)  |    int16_t a;                    |    .equ VALUE, -2000             |
    |        |                                  |    mov  r0, #VALUE & 0xff        |
-   |        |    a = VALUE;                    |    movt r0, #VALUE >> 8          |
+   |        |    a = VALUE;                    |    movt r0, #(VALUE >> 8) & 0xff |
    +--------+----------------------------------+----------------------------------+
 
 :numref:`afetacao_constante` (a) – carregamento de valor positivo inferior a 256;

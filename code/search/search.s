@@ -1,36 +1,35 @@
-   	.section .startup
-   	b	_start
-   	b	.
+	.section .startup
+	b	_start
+	b	.
 
-   _start:
-   	ldr	sp, addressof_stack_top
-   	mov	r0, pc
-   	add	lr, r0, #4
-   	ldr	pc, addressof_main
-   	b	.
+_start:
+	ldr	sp, addressof_stack_top
+	mov	r0, pc
+	add	lr, r0, #4
+	ldr	pc, addressof_main
+	b	.
 
-   addressof_stack_top:
-   	.word	stack_top
+addressof_stack_top:
+	.word	stack_top
 
-   addressof_main:
-   	.word	main
+addressof_main:
+	.word	main
 
-   	.text
-   	.data
+	.text
+	.data
 
 	.section .stack
 	.space	128
 stack_top:
 
 /*----------------------------------------------------------------
-	#define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
 	uint16_t table1[] = {10, 20, 5, 6, 34, 9};
 	uint16_t table2[] = {11, 22, 33};
 	uint16_t p, q;
 
 	int main() {
-		p = search(table1, ARRAY_SIZE(table1), 20);
-		q = search(table2, ARRAY_SIZE(table2), 31);
+		p = search(table1, sizeof table1 / sizeof table1[0], 20);
+		q = search(table2, sizeof table2 / sizeof table2[0], 31);
 	}
 */
 	.data
@@ -42,8 +41,6 @@ table2:
 	.word	11, 22, 33
 table2_end:
 
-	.equ	TABLE1_SIZE, (table1_end - table1) / 2
-
 	.bss
 p:
 	.word	0
@@ -53,8 +50,9 @@ q:
 	.text
 main:
 	push	lr
+
 	ldr	r0, addressof_table1
-	mov	r1, #TABLE1_SIZE
+	mov	r1, #(table1_end - table1) / 2
 	mov	r2, #20
 	bl	search
 	ldr	r1, addressof_p
@@ -66,6 +64,7 @@ main:
 	bl	search
 	ldr	r1, addressof_q
 	str	r0, [r1]
+
 	pop	pc
 
 addressof_table1:
@@ -78,7 +77,7 @@ addressof_q:
 	.word	q
 
 /*---------------------------------------------------------
-<r0> uint16_t search(<r0> uint16_t array[], <r1> uint8_t array_size,
+<r0> int16_t search(<r0> uint16_t array[], <r1> uint8_t array_size,
 		 <r2> uint16_t value) {
 	for (<r3> uint8_t i = 0; i < array_size && array[i] != value; ++i)
 		;
@@ -87,22 +86,24 @@ addressof_q:
 	return -1;
 }
 */
+
 	.text
 search:
 	push	r4
-	mov	r3, #0		/* r3 - i */
+	mov	r3, #0		/* i = 0 */
 search_for:
-	cmp	r3, r1		/* i - array_size */
+	cmp	r3, r1		/* i < array_size */
 	bhs	search_for_end
-	ldr	r4, [r0, r3]	/* array[i] != value */
+	add	r4, r3, r3
+	ldr	r4, [r0, r4]	/* array[i] != value */
 	cmp	r4, r2
 	beq	search_for_end
-	add	r3, r3, #2 	/* ++i */
+	add	r3, r3, #1 	/* ++i */
 	b	search_for
 search_for_end:
 	cmp	r3, r1		/* if (i < array_size) */
 	bhs	search_if_end
-	lsr	r0, r3, #1	/* return i */
+	mov	r0, r3		/* return i */
 	b	search_end
 search_if_end:
 	mov	r0, #0		/* return -1 */

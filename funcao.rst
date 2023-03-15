@@ -82,7 +82,7 @@ salta para o endereço indicado pela *label* *delay*.
 
 Na função **delay** a variável local **i** tem o âmbito do *for*.
 Pode ser suportada num registo do processador.
-No caso do programa :numref:`function_void` (b), é suportada no registo R1.
+No caso do programa da :numref:`function_void` (b), é suportada no registo R1.
 
    .. figure:: figures/bl1.png
       :name: bl1
@@ -96,7 +96,7 @@ por transferir o conteúdo de PC (0x4308) para LR
 e em seguida afecta o PC com o endereço de **delay** (0x4076).
 Na segunda chamada, no endereço 0x430e, o processador realiza acções semelhantes,
 com a diferença do valor de LR ser 0x4310.
-Ao executar a instrução mov pc, lr posicionada no final da função,
+Ao executar a instrução ``mov pc, lr`` posicionada no final da função,
 no endereço 0x4082, o processamento regressa ao endereço 0x4308
 na primeira chamada e regressa ao endereço 0x4310
 na segunda chamada.
@@ -263,4 +263,117 @@ Em seguida incrementa o SP para o endereço 0x4008.
 O conteúdo das posições de memória 0x4006 e 0x4007 não é alterado,
 mas estas posições ficam disponíveis para serem reutilizadas
 na próxima instrução **push**.
+
+.. _convencoes de programacao de funcoes:
+
+Convenções de programação de funções
+====================================
+Com vista à estruturação dos programas de modo a fazer-se uma boa utilização dos
+recursos (memória e processador)
+e à reutilização e análise de partes de programas (funções e variáveis),
+é conveniente usarem-se convenções de programação.
+Designadamente, representação dos tipos de dados, parâmetros de funções, retorno de valor de funções e vocação dos registos.
+
+Nos exemplos de programa apresentados são utilizadas as convenções descritas seguidamente.
+
+Tipos de dados
+--------------
+
+Os tipos numéricos são codificados em código binário natural ou em código dos complementos para dois,
+usando 8, 16, 32 ou 64 *bits*. Os dados dos programas são representados segundo estes tipos em valores simples ou em *array*.
+
+.. table:: Representação dos tipos numéricos
+   :widths: auto
+   :align: center
+   :name: representacao_tipos
+
+   +----------------------------+----------+----------+
+   | Tipo                       | Memória  | Registo  |
+   |                            | (*bits*) | (*bits*) |
+   +============================+==========+==========+
+   | ``char``                   | 8        | 16       |
+   +----------------------------+----------+----------+
+   | ``short``                  | 16       | 16       |
+   +----------------------------+----------+----------+
+   | ``int``                    | 16       | 16       |
+   +----------------------------+----------+----------+
+   | ``long``                   | 32       | 32       |
+   +----------------------------+----------+----------+
+   | ``uint8_t`` e ``int8_t``   | 8        | 16       |
+   +----------------------------+----------+----------+
+   | ``uint16_t`` e ``int16_t`` | 16       | 16       |
+   +----------------------------+----------+----------+
+   | ``uint32_t`` e ``int32_t`` | 32       | 32       |
+   +----------------------------+----------+----------+
+   | ``uint64_t`` e ``int64_t`` | 64       | 64       |
+   +----------------------------+----------+----------+
+
+Na :numref:`representacao_tipos` apresentam-se as dimensões em número de *bits* com que são representados
+os tipos numéricos em função do suporte material: memória principal ou registo do processador.
+
+Os tipos representados na memória com 8 *bits* são representados
+nos registos do processador com 16 *bits*.
+Esta diferença visa preparar os valores para serem operados pelo P16,
+que apenas realiza operações na dimensão dos registos.
+
+O tipo **char** é um tipo para números naturais (*unsigned*) e os
+tipos **short**, **int** e **long** são tipos para números relativos (*signed*).
+
+Os tipos representados em memória com dimensões superiores a 16 *bits* ocupam os registos necessários até
+perfazer a totalidade da dimensão ou são processados por partes.
+
+Passagem de argumentos
+----------------------
+
+As funções que comportam parâmetros recebem os argumentos nos registos do processador,
+ocupando a quantidade necessária, por ordem: R0, R1, R2 e R3. ::
+
+   void f(uint8_t a,  uint16_t b,  int8_t c,  int16_t d)
+                  r0           r1         r2          r3
+
+Se os argumentos ocuparem mais que os quatro registos, os restantes são passados no *stack*.
+Sendo o argumento mais à direita o primeiro a ser empilhado. ::
+
+   void f(uint8_t a,  uint16_t b,  int8_t c,  int16_t d,  int8_t e,  int16_t f)
+                  r0           r1         r2          r3      stack[1]    stack[0]
+
+Se o tipo do parâmetro for um valor codificado a 32 *bits*,
+a passagem utiliza dois registos consecutivos.
+Cabendo ao registo de menor índice a parte de menor peso do argumento. ::
+
+   void f(uint8_t a,   uint32_t b,  int8_t c)
+                  r0            r2:r1      r3
+
+Se o parâmetro for um *array*, independentemente do tipo dos elementos,
+o que é passado como argumento é o endereço da primeira posição do *array*. ::
+
+   void f(uint16_t array[], uint8_t dim)
+                   r0               r1
+
+Os argumentos de parâmetros dos tipos representados a 8 *bits*
+-- char, uint8_t ou int8_t -- são convertidos para representação a 16 *bits*.
+
+
+Valor de retorno
+----------------
+
+O valor de retorno de uma função, caso exista, é devolvido no registo R0.
+Se for um valor representado a 32 *bits* é devolvido no par de registos R1:R0,
+com a parte de menor peso em R0.
+Se o valor de retorno for de tipo representado a 8 *bits* -- char, uint8_t ou int8_t
+-- será retornado em R0 com representação a 16 bits.
+
+.. _carregamento de endereco em registo:
+.. _utilizacao dos registos:
+
+Utilização dos registos
+-----------------------
+
+Uma função pode utilizar os registos de R0 a R3 sem ter de preservar o seu conteúdo original.
+Os restantes registos de R4 a R12 devem ser preservados.
+
+Na perspectiva de função chamadora, a função chamada pode modificar os registos R0 a R3, LR e CPSR;
+
+Na perspectiva da função chamada, os conteúdos dos registos de R4 a R12 têm de ser mantidos,
+independentemente de serem ou não utilizados.
 
