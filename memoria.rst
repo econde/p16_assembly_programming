@@ -58,6 +58,8 @@ Modelo da memória
       Representação em memória de uma palavra de 16 *bits*, alinhada,
       com posicionamento *big-endian*
 
+.. _acesso a valores em memoria:
+
 Acesso a valores em memória
 ---------------------------
 
@@ -305,11 +307,11 @@ o valor original e preenche as posições até à 7 com esse valor.
 Carregamento de endereço em registo
 -----------------------------------
 
-A solução geral para carregamento de endereços nos registos do processador
-passa por utilizar a instrução **ldr  rd, label**.
-Esta instrução copia um valor expressoa a 16 *bits*,
-armazenado em memória, no endereço definido por *label*,
-para o registo **rd**.
+O programa da :numref:`load_address` incrementa a variável **x** alojada em memória.
+Ao nível da máquina, as operações a realizar são:
+ler o conteúdo da variável de memória para registo;
+incrementar esse registo;
+voltar a escrever esse registo na variável em memória.
 
    .. table:: Carregamento de endereço em registo.
       :widths: auto
@@ -325,7 +327,6 @@ para o registo **rd**.
       |    x++;                          |        .byte  0x55                  |
       |                                  |                                     |
       |                                  |        .text                        |
-      |                                  |        mov    r1, #1                |
       |                                  |        ldr    r1, addressof_x       |
       |                                  |        ldrb   r0, [r1]              |
       |                                  |        add    r0, r0, #1            |
@@ -335,36 +336,40 @@ para o registo **rd**.
       |                                  |        .word  x                     |
       +----------------------------------+-------------------------------------+
 
-O programa da :numref:`load_address` incrementa a variável **x** alojada em memória.
-Ao nível da máquina, as operações a realizar são:
-ler o conteúdo da variável de memória para registo;
-incrementar esse registo;
-voltar a escrever esse registo na variável em memória.
-
-Para aceder à variável (ler – LDR ou escrever – STR) é necessário
-carregar o endereço da variável num registo porque o P16 não dispõe de endereçamento directo.
 A variável **x** é definida em linguagem *assembly*
-pela label **x:** seguida da diretiva ``.byte 0x55``,
-que significa reservar uma posição de memória inicializada com o valor 0x55.
+pela *label* **x:** seguida da diretiva ``.byte 0x55``,
+que significa reservar uma posição de memória inicializada com o valor 0x55 (linhas 2 e 3).
 A diretiva **.data** indica uma zona de memória para variáveis.
 
 Em linguagem *assembly* uma *label* tem um valor associado que é o endereço de memória
-do local onde foi colocada a *label:*.
+assinalado pela *label*.
+No exemplo da :numref:`load_address`, a *label* **x** tem um valor associado
+que é o endereço da posição de memória assinalada por **x:** (a que contém 0x55).
 
-No exemplo da :numref:`load_address`, o símbolo **x** tem um valor associado
-que é o endereço da posição de memória assinalada por **x:**.
-Essa posição de memória aloja a variável **x** cujo conteúdo inicial é 0x55.
+Para aceder à variável **x**
+-- copiar o seu conteúdo para registo ou alterar o seu conteúdo com o valor de um registo --
+utilizam-se, respetivamente, as instruções ``ldrb  r0, [r1]`` e ``strb  [r0, [r1]``
+(ver secção :ref:`acesso a valores em memoria`).
+A utilização destas instruções implica carregar previamente em R1,
+o endereço de **x**.
+
+A solução geral para carregar endereços em registos
+passa por utilizar a instrução **ldr  rd, label**.
+Esta instrução copia um valor expresso a 16 *bits*,
+armazenado em memória, no endereço definido por *label*,
+para o registo **rd**.
 
 A instrução ``ldr  r1, addressof_x`` carrega em R1 a palavra de 16 *bits*
 alojada em memória na posição assinalada pela *label* ``addressof_x:``.
 Esse conteúdo é o endereço da variável **x**, definido pela diretiva ``.word x``,
-que reserva duas posições de memória inicializadas com o valor do simbolo **x**.
+que reserva duas posições de memória inicializadas com o valor da *label* **x**.
 
-A instrução **ldr  rd,label** usa um método de endereçamento relativo ao PC,
-para ler da posição de memória definida por *label*.
-O código binário desta instrução, :numref:`ldr_label`,
-tem um campo de 6 *bits* (imm6) para codificar,
-a distância no espaço de endereçamento a que a *label* se encontra da instrução LDR,
+A instrução **ldr  rd, label** usa um método de endereçamento relativo ao PC,
+para definir o endereço da posição de memória especificada por *label*.
+Esse endereço é obtido adicionando o valor atual do PC
+à constante codificada no campo imm6 do código binário da instrução (ver :numref:`ldr_label`).
+Este campo codifica a distância,
+no espaço de endereçamento, a que *label* se encontra da instrução **ldr  rd, label**,
 em número de *words* (palavras de 16 *bits*),
 no sentido crescente dos endereços.
 
