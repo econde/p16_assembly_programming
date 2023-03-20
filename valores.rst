@@ -712,13 +712,14 @@ Comparação de valores numéricos
       |        c = a;                    |    if_end:                          |
       +----------------------------------+-------------------------------------+
 
-   No programa da :numref:`compare_equal` a instrução ``mov  r2, r0`` (correspondente a c = a)
+   No programa da :numref:`compare_equal` a instrução ``mov  r2, r0``, correspondente a ``c = a``,
    não deve ser executada se **a** for diferente de **b**.
-   A instrução ``cmp  r0, r1`` afeta a *flag* Z com 1 se **a** e **b** forem iguais
+   A instrução ``cmp  r0, r1`` ao realizar a subtração de R1 a R0,
+   afeta a *flag* Z com 1 se **a** e **b** forem iguais
    e afeta a *flag* Z com 0 se forem diferentes.
-   Portanto a instrução ``mov  r2, r0`` não deve ser executada se Z for 0,
-   que é o que resulta da utilização da instrução ``bzc  if_end`` (*Branch if flag Zero is Clear*)
-   que "salta" para a posição do programa indicada pela *label* ``if_end`` se a *flag* Z for 0.
+   Portanto, a instrução ``mov  r2, r0`` não deve ser executada se Z for 0.
+   É o que resulta da utilização da instrução ``bzc  if_end`` (*Branch if flag Zero is Clear*).
+   Esta instrução transfere a execução para a posição do programa indicada pela *label* ``if_end`` se a *flag* Z for 0.
 
    A instrução BZC tem o nome alternativo BNE (*Branch if Not Equal*), que permite
    escrever o programa em *assembly* de forma mais direta.
@@ -742,13 +743,15 @@ Comparação de valores numéricos
       |        c = a;                    |    if_end:                          |
       +----------------------------------+-------------------------------------+
 
-   No programa da :numref:`compare_less_than` a instrução ``mov  r2, r0`` (correspondente a c = a)
+   No programa da :numref:`compare_less_than` a instrução ``mov  r2, r0``, correspondente a ``c = a``,
    não deve ser executada se **a** for maior ou igual a **b**.
-   A instrução ``cmp  r0, r1`` afeta a *flag* C com 1 se **a** for menor que **b**
+   A instrução ``cmp  r0, r1`` ao realizar a subtração de R1 a R0
+   afeta a *flag* C com 1 se **a** for menor a **b**
    e afeta a *flag* C com 0 se **a** for maior ou igual a **b**.
+   A *flag* C assume o valor do arrasto da subtração da posição de peso 16 para a posição de peso 15.
    Assim, a instrução ``mov  r2, r0`` não deve ser executada se a *flag* C for 0,
-   que é o que resulta da utilização da instrução ``bcc  if_end`` (*Branch if flag Carry is Clear*)
-   que "salta" para a posição do programa indicada pela *label* ``if_end`` se a *flag* C for 0.
+   que é o que resulta da utilização da instrução ``bcc  if_end`` (*Branch if flag Carry is Clear*).
+   Esta instrução transfere a execução para a posição do programa indicada pela *label* ``if_end`` se a *flag* C for 0.
 
    A instrução BCC tem o nome alternativo BHS (*Branch if Higher or Same*).
    Onde está a ``bcc  if_end`` poderia estar ``bhs  if_end``.
@@ -773,18 +776,18 @@ Comparação de valores numéricos
       |    :linenos:                     |                                     |
       |                                  |    ; a = r0   b = r1   c = r2       |
       |    int a, b, c;                  |        cmp   r1, r0                 |
-      |                                  |        bcc   if_end                 |
+      |                                  |        bhs   if_end                 |
       |    if (a > b)                    |        mov   r2, r0                 |
       |        c = a;                    |    if_end:                          |
       +----------------------------------+-------------------------------------+
 
    Para avaliar a condição **a > b** no programa da :numref:`compare_greater_than`
-   com a mesma instrução ``cmp r0, r1`` a condição de salto seria a contrária
+   com base na mesma instrução ``cmp r0, r1`` a condição de salto seria a contrária
    à do programa da :numref:`compare_less_than` -- seria "saltar" se menor ou igual (*Lower or Same*).
 
    Como no P16 não existe a suposta instrução de salto BLS,
    a solução apresentada realiza a subtracção com os operandos em posições invertidas
-   (``cmp  r1, r0``) e continua a usar BCC.
+   (``cmp  r1, r0``) e continua a aplicar BHS.
 
    A instrução ``cmp  r1, r0`` afeta a *flag* C com 1 se **a** for maior que **b**
    e afeta a *flag* C com 0 se **a** for menor ou igual a **b**.

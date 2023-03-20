@@ -72,7 +72,7 @@ uint16_t factorial(<r0><r4>uint16_t n) {
 	if (n == 0)
 		return 1;
 	else {
-		uint32_t <r3:r2>tmp = n * factorial(n - 1);
+		uint32_t <r1:r0> tmp = n * factorial(n - 1);
 		return tmp < UINT16_MAX ? tmp : UINT16_MAX;
 	}
 }

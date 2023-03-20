@@ -83,10 +83,9 @@ default:
 void histogram_vowel(<r0> <r4> uint8_t phrase[], <r1> <r5> uint16_t max_letters,
 			<r2> <r6> uint16_t occurrences[5]) {
 	for (<r7> uint16_t i = 0; phrase[i] != '\0' && i < max_letters ; i++ ) {
-		<r0>int16_t idx;
-		if ( (idx = find_vowel(phrase[i]) ) != -1 ) {
+		<r0> int16_t idx;
+		if ( (idx = find_vowel(phrase[i]) ) != -1 )
 			occurrences[idx]++;
-		}
 	}
 }
 */

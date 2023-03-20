@@ -37,25 +37,24 @@ pela qual o algoritmo é conhecido.
 Em linguagem C a operação de multiplicação é indicada pelo operador **\*** como na :numref:`multiply1`.
 Ao nível da máquina, esta operação pode ser realizada por uma instrução específica de multiplicação,
 ou, na sua falta, como no caso do P16, é realizada por uma função auxiliar de multiplicação,
-numa situação equivalente à programa na :numref:`multiply2`.
+numa situação equivalente à do programa da :numref:`multiply2`.
 
-Caso se utilize uma função auxiliar,
-ambas as programações originam um código de chamada como o apresentado na :numref:`multiply3`.
+A utilização de uma função auxiliar, origina um código de chamada como o apresentado na :numref:`multiply3`.
 
 Na secção **.data** definem-se as variáveis **m** e **n**, que servem como operandos (linhas 2 a 5)
-e na secção **.bss** as variáveis **p** e **q** que recebem os resultados (linhas 8 a 11).
+e na secção **.bss** definem-se as variáveis **p** e **q** que recebem os resultados (linhas 8 a 11).
 
 O código das linhas 17 a 21 diz respeito à invocação
 da função **multiply** com as constantes 4 e 7 como argumentos.
-Este valores são nos registos R0 e R1, nas linhas 17 e 18
+Estes valores são carregados nos registos R0 e R1 (linhas 17 e 18)
 como explicado em :ref:`afetacao com constante`.
 O resultado, devolvido em R0, é guardado na variável **q** (linhas 20 e 21).
 
 O código das linhas 23 a 29 diz respeito à invocação com
-as variáveis **m** e **n** como argumentos.
-Estes argumentos são carregados no registos R0 e R1 (linhas 23 a 26)
-e o resultado é guardado na variável **p** (linhas 28 e 29)
-como explicado em :ref:`valores em memoria`.
+da função **multiply** com os valores das variáveis **m** e **n** como argumentos.
+Estes valores são carregados nos registos R0 e R1 (linhas 23 a 26)
+e resultado é guardado na variável **p** (linhas 28 e 29)
+como explicado em :ref:`acesso a valores em memoria`.
 
 .. table::
    :widths: auto
@@ -79,9 +78,11 @@ como explicado em :ref:`valores em memoria`.
    +----------------------------------------------------------+--------------------------------------------------------+
 
 Na :numref:`multiply4` apresenta-se a função **multiply**
-que implementa em linguagem C o algoritmo enunciado acima.
-(As anotações entre **<** e **>** junto de parâmetros e variáveis
-servem para evidenciar os registos que as suportam.
+que implementa em linguagem C, o algoritmo enunciado acima.
+Em cada ciclo *while* é adicionada à variável *product* uma parcela do somatório.
+
+(As anotações entre **<** e **>** junto de parâmetros e variáveis locais
+servem para indicar os registos que as suportam.)
 
 .. literalinclude:: code/multiply_shift_add/multiply.s
    :language: c
@@ -91,8 +92,7 @@ servem para evidenciar os registos que as suportam.
 
 A implementação em linguagem *assembly* da função **multiply**,
 apresentada na :numref:`multiply5`, segue a :ref:`convencoes de programacao de funcoes`.
-Designadamente:
-assume que os argumentos da função -- **multiplicand** e **multiplier** --
+Designadamente, assume que os argumentos da função -- **multiplicand** e **multiplier** --
 estão presentes nos registos R0 e R1;
 o resultado da função -- produto de **multiplicand** por **multiplier** --
 produzido em R2 é transferido para R0 antes da função retornar;
@@ -115,8 +115,8 @@ A assunção de que os argumentos estão presentes em R0 e R1
 Divisão
 -------
 
-O programa seguinte implementa o algoritmo de divisão *shift-and-subtract*.
-Este algoritmo executa um número de iterações igual ao número de bits dos operandos.
+.. O programa seguinte implementa o algoritmo de divisão *shift-and-subtract*.
+   Este algoritmo executa um número de iterações igual ao número de bits dos operandos.
 
 
 
@@ -142,7 +142,7 @@ Na :numref:`search1` é apresentado um programa de utilização da função
 
 Na :numref:`search2` é apresentada uma tradução do programa da :numref:`search1`
 para liguagem *assembly*. Da linha 1 até à linha 14 apresenta-se a definicão
-dos *arrays* **table1** e **table2**, e das variáveis **p** e **q**.
+dos *arrays* **table1** e **table2** e das variáveis **p** e **q**.
 A escrita de sucessivos valores como argumento da diretiva **.word** corresponde
 a reservar em memória uma sequência de *words* iniciadas com esses valores.
 As *labels* **table1_end** e **table2_end** são utilizadas como referências
@@ -153,7 +153,7 @@ porque cada elemento ocupa duas posições de memória (linhas 21 e 28).
 
 A passagem de um *array* como argumento de uma função,
 concretiza-se carregando o endereço da primeira posição do *array*
-no registo correspondente à posição do parâmetro (linhas 21 e 28).
+no registo correspondente ao parâmetro (linhas 20 e 27).
 Este carregamento utiliza o método explicado em :ref:`carregamento de endereco em registo`.
 
 .. literalinclude:: code/search/search.s
@@ -171,17 +171,9 @@ Este carregamento utiliza o método explicado em :ref:`carregamento de endereco 
    :name: search3
 
 Na :numref:`search3` os parâmetros da função **search**
-assim como a variável local **i** são assinalados com a
-indicação dos registos que os suportam.
+e a variável local **i** são assinalados com os registos que os suportam.
 Por exemplo, na linha 1 ``<r0> uint16_t array[]``
 significa que o argumento deste parâmetro é recebido no registo R0.
-
-O registo R3 suporta a variável *i* que é usada como índice de acesso ao array.
-Como os elementos do *array* ocupam duas posições de memória,
-é necessário multiplicar R3 por dois no cálculo do endereço de cada posição ``a[i]``.
-A instrução ``add  r4, r3, r3`` realiza essa multiplocação deixamdo em R4 o valor de R3 * 2.
-
-O registo R4 foi preservado em cumprimento da convenção de :ref:`utilizacao dos registos`.
 
 .. literalinclude:: code/search/search.s
    :language: asm
@@ -189,6 +181,13 @@ O registo R4 foi preservado em cumprimento da convenção de :ref:`utilizacao do
    :caption: Função **search** em linguagem *assembly*
    :linenos:
    :name: search4
+
+Na :numref:`search4`, o registo R3 suporta a variável **i** que é usada como índice de acesso ao *array*.
+No cálculo do endereço de cada posição ``a[i]``, é necessário multiplicar R3 por dois
+porque os elementos do *array* ocupam duas posições de memória.
+A instrução ``add  r4, r3, r3`` (linha 8) realiza essa multiplicação afetando R4 com R3 * 2.
+
+O registo R4 foi preservado em cumprimento da convenção de :ref:`utilizacao dos registos`.
 
 **Código fonte:** :download:`search.s<code/search/search.s>`
 
@@ -248,14 +247,14 @@ Histograma de vogais
 
 .. literalinclude:: code/histogram/vowel.s
    :language: c
-   :lines: 83-91
+   :lines: 83-90
    :caption: Função histogram_vowel em linguagem C
    :linenos:
    :name: vowel3
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 93-124
+   :lines: 92-123
    :caption: Função histogram_vowel em linguagem *assembly*
    :linenos:
    :name: vowel4
@@ -282,25 +281,25 @@ Chamada recursiva
    :lines: 27-33
    :caption: Chamada da função factorial em linguagem C
    :linenos:
-   :name: bubble_sort1
+   :name: factorial_sort1
 
 .. literalinclude:: code/factorial/factorial_asm.s
    :language: asm
    :lines: 35-67
    :caption: Chamada da função factorial em linguagem *assembly*
    :linenos:
-   :name: bubble_sort2
+   :name: factorial_sort2
 
 .. literalinclude:: code/factorial/factorial_asm.s
    :language: c
    :lines: 71-78
    :caption: Função factorial em linguagem C
    :linenos:
-   :name: bubble_sort3
+   :name: factorial_sort3
 
 .. literalinclude:: code/factorial/factorial_asm.s
    :language: asm
    :lines: 80-101
    :caption: Função factorial linguagem *assembly*
    :linenos:
-   :name: bubble_sort4
+   :name: factorial_sort4

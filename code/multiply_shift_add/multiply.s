@@ -49,8 +49,8 @@ int main() {
 }
 
 int main() {
-	p = multiply(m, n);
 	q = multiply(4, 7);
+	p = multiply(m, n);
 }
 */
 	.text

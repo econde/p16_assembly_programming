@@ -25,7 +25,7 @@ stack_top:
 /*----------------------------------------------------------------
 	uint16_t table1[] = {10, 20, 5, 6, 34, 9};
 	uint16_t table2[] = {11, 22, 33};
-	uint16_t p, q;
+	int16_t p, q;
 
 	int main() {
 		p = search(table1, sizeof table1 / sizeof table1[0], 20);
@@ -77,8 +77,7 @@ addressof_q:
 	.word	q
 
 /*---------------------------------------------------------
-<r0> int16_t search(<r0> uint16_t array[], <r1> uint8_t array_size,
-		 <r2> uint16_t value) {
+<r0> int16_t search(<r0> uint16_t array[], <r1> uint8_t array_size, <r2> uint16_t value) {
 	for (<r3> uint8_t i = 0; i < array_size && array[i] != value; ++i)
 		;
 	if( i < array_size)

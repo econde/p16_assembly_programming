@@ -363,17 +363,18 @@ com a parte de menor peso em R0.
 Se o valor de retorno for de tipo representado a 8 *bits* -- char, uint8_t ou int8_t
 -- será retornado em R0 com representação a 16 bits.
 
-.. _carregamento de endereco em registo:
 .. _utilizacao dos registos:
 
 Utilização dos registos
 -----------------------
 
-Uma função pode utilizar os registos de R0 a R3 sem ter de preservar o seu conteúdo original.
-Os restantes registos de R4 a R12 devem ser preservados.
+Uma função pode utilizar os registos de R0 a R3 sem preservar o seu conteúdo original.
+Os restantes registos -- de R4 a R12 e SP -- devem ser preservados.
 
-Na perspectiva de função chamadora, a função chamada pode modificar os registos R0 a R3, LR e CPSR;
+Na perspectiva de função chamadora, no regresso da invocação a uma função,
+o conteúdo dos registos R0 a R3, LR e CPSR podem vir alterados;
+o conteúdo dos registos R4 a R12 e o SP não pode vir alterados.
 
-Na perspectiva da função chamada, os conteúdos dos registos de R4 a R12 têm de ser mantidos,
-independentemente de serem ou não utilizados.
-
+Na perspectiva inversa, a função chamada, deve salvar e restaurar os registos que utilizar de R4 a R12
+e assegurar que, imediatamente após se executar a instrução de retorno,
+o registo SP aponta a mesma posição de *stack* que apontava imediatamente antes de se executar a primeira instrução da função.

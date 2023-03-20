@@ -320,7 +320,7 @@ voltar a escrever esse registo na variável em memória.
 
       +----------------------------------+-------------------------------------+
       | .. code-block:: c                | .. code-block:: asm                 |
-      |    :linenos:                     |    :linenos:                        |
+      |                                  |    :linenos:                        |
       |                                  |                                     |
       |    uint8_t x = 55;               |        .data                        |
       |                                  |    x:                               |
