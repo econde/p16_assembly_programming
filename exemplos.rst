@@ -225,6 +225,8 @@ por ordem crescente, utilizando uma variante do algoritmo de ordenação *bubble
    :linenos:
    :name: bubble_sort4
 
+**Código fonte:** :download:`bubble_sort.s<code/bubble_sort/bubble_sort.s>`
+
 Chamadas encadeadas de funções
 ------------------------------
 
@@ -240,7 +242,7 @@ Histograma de vogais
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 146-205
+   :lines: 145-205
    :caption: Chamada da função histogram_vowel em linguagem *assembly*
    :linenos:
    :name: vowel2
@@ -272,34 +274,38 @@ Histograma de vogais
    :caption: Função find_vowel em linguagem *assembly*
    :linenos:
    :name: vowel6
+  
+**Código fonte:** :download:`vowel.s<code/histogram/vowel.s>`
 
 Chamada recursiva
 -----------------
 
-.. literalinclude:: code/factorial/factorial_asm.s
+.. literalinclude:: code/factorial/factorial.s
    :language: c
    :lines: 27-33
    :caption: Chamada da função factorial em linguagem C
    :linenos:
    :name: factorial_sort1
 
-.. literalinclude:: code/factorial/factorial_asm.s
+.. literalinclude:: code/factorial/factorial.s
    :language: asm
    :lines: 35-67
    :caption: Chamada da função factorial em linguagem *assembly*
    :linenos:
    :name: factorial_sort2
 
-.. literalinclude:: code/factorial/factorial_asm.s
+.. literalinclude:: code/factorial/factorial.s
    :language: c
    :lines: 71-78
    :caption: Função factorial em linguagem C
    :linenos:
    :name: factorial_sort3
 
-.. literalinclude:: code/factorial/factorial_asm.s
+.. literalinclude:: code/factorial/factorial.s
    :language: asm
    :lines: 80-101
-   :caption: Função factorial linguagem *assembly*
+   :caption: Função factorial em linguagem *assembly*
    :linenos:
    :name: factorial_sort4
+
+**Código fonte:** :download:`factorial.s<code/factorial/factorial.s>`
