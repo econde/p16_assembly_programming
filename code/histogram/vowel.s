@@ -45,10 +45,10 @@ int16_t find_vowel(uint8_t letter) {
 	.text
 find_vowel:
 case_a:
-	mov	r1, #'a'
+	mov	r1, #'a'	; case 'a':
 	cmp	r0, r1
 	bne	case_e
-	mov	r0, #0
+	mov	r0, #0		; return 0;
 	mov	pc, lr
 case_e:
 	mov	r1, #'e'
@@ -75,8 +75,8 @@ case_u:
 	mov	r0, #4
 	mov	pc, lr
 default:
-	mov	r0, #-1 & 0xff
-	movt	r0, #(-1 >> 8) & 0xff
+	mov	r0, #0		; return -1
+	sub	r0, r0, #1
 	mov	pc, lr
 
 /*------------------------------------------------------------------------------
@@ -98,23 +98,23 @@ histogram_vowel:
 	mov	r4, r0
 	mov	r5, r1
 	mov	r6, r2
-	mov	r7, #0
+	mov	r7, #0		; i = 0
 	b	for_cond
 for:
-	bl	find_vowel
-	add	r1, r0, #1
+	bl	find_vowel	; phrase[i] é deixado em R0 no teste da condição do for
+	add	r1, r0, #1	; (if (... != -1) (-1 + 1 == 0)
 	bzs	if_end
-	add	r0, r0, r0	; escalar
-	ldr	r1, [r6, r0]
+	add	r0, r0, r0	; occurrences[idx]++
+	ldr	r1, [r6, r0]	; idx * 2 = idx * sizeof(uint16_t)
 	add	r1, r1, #1
 	str	r1, [r6, r0]
 if_end:
 	add	r7, r7, #1
 for_cond:
-	ldrb	r0, [r4, r7]
+	ldrb	r0, [r4, r7]	; for(...; phrase[i] != '\0' 
 	sub	r0, r0, #0
 	beq	for_end
-	cmp	r7, r5
+	cmp	r7, r5		; && i < max_letters; ...)
 	blo	for
 for_end:
 	pop	r6

@@ -19,7 +19,7 @@
    	.data
 	.bss
 
-	.section .stack
+	.stack
 	.space	128
 stack_top:
 
