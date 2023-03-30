@@ -335,7 +335,7 @@ Se os argumentos ocuparem mais que os quatro registos, os restantes são passado
 Sendo o argumento mais à direita o primeiro a ser empilhado. ::
 
    void f(uint8_t a,  uint16_t b,  int8_t c,  int16_t d,  int8_t e,  int16_t f)
-                  r0           r1         r2          r3      stack[1]    stack[0]
+                  r0           r1         r2          r3       stack       stack
 
 Se o tipo do parâmetro for um valor codificado a 32 *bits*,
 a passagem utiliza dois registos consecutivos.
@@ -371,10 +371,11 @@ Utilização dos registos
 Uma função pode utilizar os registos de R0 a R3 sem preservar o seu conteúdo original.
 Os restantes registos -- de R4 a R12 e SP -- devem ser preservados.
 
-Na perspectiva de função chamadora, no regresso da invocação a uma função,
+Na perspectiva de função chamadora, no regresso da invocação a outra função,
 o conteúdo dos registos R0 a R3, LR e CPSR podem vir alterados;
 o conteúdo dos registos R4 a R12 e o SP não pode vir alterados.
 
 Na perspectiva inversa, a função chamada, deve salvar e restaurar os registos que utilizar de R4 a R12
-e assegurar que, imediatamente após se executar a instrução de retorno,
-o registo SP aponta a mesma posição de *stack* que apontava imediatamente antes de se executar a primeira instrução da função.
+e assegurar que, imediatamente após a execução da instrução de retorno,
+o registo SP aponta a mesma posição de *stack* que apontava
+imediatamente antes da execução da instrução de chamada a função.
