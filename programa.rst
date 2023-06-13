@@ -73,7 +73,7 @@ que prepara um ambiente de execução estruturado para o SDP16.
    	.data
    	.bss
 
-   	.section .stack
+   	.stack
    	.equ	STACK_SIZE, 1024
    	.space	STACK_SIZE
    stack_top:
@@ -87,10 +87,10 @@ que prepara um ambiente de execução estruturado para o SDP16.
 
 Como o endereço 0x0002 é reservado ao atendimento de interrupções,
 a primeira instrução a executar, localizada no endereço 0x0000,
-é **b  _start** -- para prosseguir a execução noutro local.
+é **b  _start** para que a execução prossiga noutro local.
 Mesmo quando não se utilizam as interrupções,
 o endereço 0x0002 deve ser preenchido pela instrução **b  .** (surge necessariamente na linha 3).
-Se, por algum erro, o processador atender uma interrupção inesperada
+Se, por algum erro, o processador atender uma interrupção inesperada,
 o processamento não se descontrola -- o processador ficará retido a executar indefinidamente esta instrução.
 
 Para suporte à execução do programa,
@@ -112,7 +112,7 @@ mantém a execução controlada no caso da função **main** retornar.
 As definições que aparecem nas linhas 1, 18, 19, 20, 21 e 23,
 definem a existência das secções
 **.startup**, **.text** e **.rodata**, **.data**, **.bss** e **.stack**,
-assim como ser esta a sua localização relativa no espaço de endereçamento.
+assim como a sua localização relativa no espaço de endereçamento.
 
 A definição do conteúdo destas secções pode
 ser escrito depois da linha 28, repetindo-se a diretiva de secção sem alterar a localização
@@ -120,34 +120,3 @@ ser escrito depois da linha 28, repetindo-se a diretiva de secção sem alterar 
 
 A localização das secções pode ser alterada através de opções de invocação do p16as
 (`ver aqui <https://p16-assembler.readthedocs.io/pt/latest/pas_utilizacao.html#localizacao-das-seccoes>`_).
-
-Recomendações para escrita em linguagem *assembly*
-==================================================
-
-Na escrita de programas em geral, usam-se convenções de formatação para facilitar
-a leitura do programa por parte do humano.
-Em seguida lista-se um conjunto de regras geralmente utilizadas na programação em linguagem *assembly*
-e que são aplicadas nos programas de exemplo.
-
-* O texto do programa é escrito em letra minúscula,
-  excepto os identificadores de constantes.
-
-* Nos identificadores formados por várias palavras
-  usa-se como separador o carácter ‘_’ (sublinhado).
-
-* O programa é disposto na forma de uma tabela de quatro colunas.
-  Na primeira coluna insere-se apenas a *label* (se existir),
-  na segunda coluna a mnemónica da instrução ou a directiva,
-  na terceira coluna os parâmetros da instrução ou da directiva
-  e na quarta coluna os comentários até ao fim da linha
-  (começados por \';\' ou envolvidos por /\* \*/).
-
-* Cada linha contém apenas uma label, uma instrução ou uma directiva.
-
-* Para definir as colunas deve usar-se o carácter TAB
-  configurado com a largura de oito espaços.
-
-* As linhas com *label* não devem conter nenhum outro elemento.
-  Isso permite usar *labels* compridas sem desalinhar a tabulação
-  e criar separações na sequência de instruções,
-  que ajudam na interpretação do programa.

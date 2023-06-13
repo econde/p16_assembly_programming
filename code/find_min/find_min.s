@@ -18,7 +18,7 @@ addressof_main:
 	.text
 	.data
 
-	.section .stack
+	.stack
 	.space	128
 stack_top:
 
@@ -28,8 +28,8 @@ stack_top:
 	int16_t p, q;
 
 	int main() {
-		p = search(table1, sizeof table1 / sizeof table1[0], 20);
-		q = search(table2, sizeof table2 / sizeof table2[0], 31);
+		p = find_min(table1, sizeof table1 / sizeof table1[0]);
+		q = find_min(table2, sizeof table2 / sizeof table2[0]);
 	}
 */
 	.data
@@ -53,15 +53,13 @@ main:
 
 	ldr	r0, addressof_table1
 	mov	r1, #(table1_end - table1) / 2
-	mov	r2, #20
-	bl	search
+	bl	find_min
 	ldr	r1, addressof_p
 	str	r0, [r1]
 
 	ldr	r0, addressof_table2
 	mov	r1, #(table2_end - table2) / 2
-	mov	r2, #44
-	bl	search
+	bl	find_min
 	ldr	r1, addressof_q
 	str	r0, [r1]
 
@@ -77,36 +75,32 @@ addressof_q:
 	.word	q
 
 /*---------------------------------------------------------
-<r0> int16_t search(<r0> uint16_t array[], <r1> uint8_t array_size, <r2> uint16_t value) {
-	for (<r3> uint8_t i = 0; i < array_size && array[i] != value; ++i)
-		;
-	if( i < array_size)
-		return i;
-	return -1;
+<r0> int16_t find_min(<r0> uint16_t array[], <r1> uint8_t array_size) {
+	<r2> uint16_t min = array[0];
+	for (<r3> uint8_t i = 1; i < array_size; ++i)
+		if (array[i] < min)
+			min = array[i];
+	return min;
 }
 */
 
 	.text
-search:
+find_min:
 	push	r4
+	ldr	r2, [r0]	; min = array[0];
 	mov	r3, #0		; i = 0
-search_for:
+find_min_for:
 	cmp	r3, r1		; i < array_size
 	bhs	search_for_end
 	add	r4, r3, r3
-	ldr	r4, [r0, r4]	; array[i] != value
+	ldr	r4, [r0, r4]	; if (array[i] < min)
 	cmp	r4, r2
-	beq	search_for_end
+	bhs	find_min_if_end
+	mov	r2, r4		;min = array[i]
+find_min_if_end:
 	add	r3, r3, #1 	; ++i
-	b	search_for
-search_for_end:
-	cmp	r3, r1		; if (i < array_size)
-	bhs	search_if_end
-	mov	r0, r3		; return i
-	b	search_end
-search_if_end:
-	mov	r0, #0		; return -1
-	sub	r0, r0, #1
-search_end:
+	b	find_min_for
+find_min_for_end:
+	mov	r0, r2		; return min
 	pop	r4
 	mov	pc, lr

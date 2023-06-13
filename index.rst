@@ -15,13 +15,18 @@ P16 - Programação em *Assembly*
    :maxdepth: 2
    :numbered:
    :caption: Conteúdo:
+   :glob:
 
    introducao.rst
    valores.rst
+   operacoes.rst
    controlo.rst
    memoria.rst
    funcao.rst
+   stack.rst
+   convencoes.rst
    programa.rst
+   recomendacoes.rst
    exemplos.rst
 
 * :ref:`search`

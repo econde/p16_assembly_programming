@@ -177,7 +177,7 @@ significa que o argumento deste parâmetro é recebido no registo R0.
 
 .. literalinclude:: code/search/search.s
    :language: asm
-   :lines: 90-113
+   :lines: 90-112
    :caption: Função **search** em linguagem *assembly*
    :linenos:
    :name: search4
@@ -235,14 +235,14 @@ Histograma de vogais
 
 .. literalinclude:: code/histogram/vowel.s
    :language: c
-   :lines: 129-144
+   :lines: 127-143
    :caption: Chamada da função histogram_vowel em linguagem C
    :linenos:
    :name: vowel1
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 145-205
+   :lines: 145-204
    :caption: Chamada da função histogram_vowel em linguagem *assembly*
    :linenos:
    :name: vowel2
@@ -274,7 +274,7 @@ Histograma de vogais
    :caption: Função find_vowel em linguagem *assembly*
    :linenos:
    :name: vowel6
-  
+
 **Código fonte:** :download:`vowel.s<code/histogram/vowel.s>`
 
 Chamada recursiva

@@ -6,187 +6,187 @@ Valores em memória
 Modelo da memória
 -----------------
 
-   A arquitetura do P16 define um espaço de endereçamento de 64 Ki posições de memória.
-   Cada posição de memória armazena uma palavra de oito *bits* -- um *byte*,
-   sendo esta a unidade mínima de endereçamento.
+A arquitetura do P16 define um espaço de endereçamento de 64 Ki posições de memória.
+Cada posição de memória armazena uma palavra de oito *bits* -- um *byte*,
+sendo esta a unidade mínima de endereçamento.
 
-   A :numref:`p16_memory_sapce_bit` representa o espaço de memória ao nível binário.
-   Do lado esquerdo os endereços das posições de memória, que vão de `0x0000` a `0xffff`.
-   Do lado direito os conteúdos das posições de memória.
-   Por exemplo, a posição de memória com endereço `0x0000` contém o *byte* de valor `0x56`
-   e a posição de memória com endereço `0xfffd` contém o *byte* de valor `0x00`.
+A :numref:`p16_memory_sapce_bit` representa o espaço de memória ao nível binário.
+Do lado esquerdo os endereços das posições de memória, que vão de `0x0000` a `0xffff`.
+Do lado direito os conteúdos das posições de memória.
+Por exemplo, a posição de memória com endereço `0x0000` contém o *byte* de valor `0x56`
+e a posição de memória com endereço `0xfffd` contém o *byte* de valor `0x00`.
 
-   .. figure:: figures/p16_memory_space_bit.png
-      :name: p16_memory_sapce_bit
-      :align: center
-      :scale: 25%
+.. figure:: figures/p16_memory_space_bit.png
+   :name: p16_memory_sapce_bit
+   :align: center
+   :scale: 25%
 
-      Representação do espaço e memória do P16 ao nível binário.
+   Representação do espaço e memória do P16 ao nível binário.
 
-   O P16 é classificado como um processador de 16 *bits*,
-   porque processa palavras formadas por 16 *bits* -- também designadas por *words*.
-   Armazenada em memória, uma *word* ocupa duas posições de memória consecutivas
-   e diz-se alinhada se ocupar como primeira posição, no sentido crescente dos endereços,
-   uma posição de endereço par -- o valor do *bit* de menor peso do endereço ser zero.
+O P16 é classificado como um processador de 16 *bits*,
+porque processa palavras formadas por 16 *bits* -- também designadas por *words*.
+Armazenada em memória, uma *word* ocupa duas posições de memória consecutivas
+e diz-se alinhada se ocupar como primeira posição, no sentido crescente dos endereços,
+uma posição de endereço par -- o valor do *bit* de menor peso do endereço ser zero.
 
-   A :numref:`little_endian` mostra o valor numérico 262 (0x0106),
-   representado em binário, numa palavra de 16 *bits*, armazenada em memória.
-   O *byte* de menor peso da palavra (0x06) ocupa a posição de memória de endereço 0x0024
-   e o *byte* de maior peso da palavra (0x01) ocupa a posição de memória de endereço 0x0025.
-   O posicionamento em que a parte de menor peso da palavra ocupa um endereço menor
-   e a parte de maior peso ocupa um endereço maior, designa-se por “little-endian”.
+A :numref:`little_endian` mostra o valor numérico 262 (0x0106),
+representado em binário, numa palavra de 16 *bits*, armazenada em memória.
+O *byte* de menor peso da palavra (0x06) ocupa a posição de memória de endereço 0x0024
+e o *byte* de maior peso da palavra (0x01) ocupa a posição de memória de endereço 0x0025.
+O posicionamento em que a parte de menor peso da palavra ocupa um endereço menor
+e a parte de maior peso ocupa um endereço maior, designa-se por “little-endian”.
 
-   .. figure:: figures/little_endian.png
-      :name: little_endian
-      :align: center
-      :scale: 25%
+.. figure:: figures/little_endian.png
+   :name: little_endian
+   :align: center
+   :scale: 25%
 
-      Representação em memória de uma palavra de 16 *bits*, alinhada,
-      com posicionamento *little-endian*
+   Representação em memória de uma palavra de 16 *bits*, alinhada,
+   com posicionamento *little-endian*
 
-   A :numref:`big_endian` mostra uma representação equivalente à da :numref:`little_endian`,
-   mas em que o *byte* de menor peso do valor ocupa a posição de memória de endereço 0x0025
-   e o *byte* de maior peso ocupa a posição de endereço 0x0024.
-   O posicionamento em que a parte de menor peso da palavra ocupa um endereço maior
-   e a parte de maior peso ocupa um endereço menor, designa-se por “big-endian”.
+A :numref:`big_endian` mostra uma representação equivalente à da :numref:`little_endian`,
+mas em que o *byte* de menor peso do valor ocupa a posição de memória de endereço 0x0025
+e o *byte* de maior peso ocupa a posição de endereço 0x0024.
+O posicionamento em que a parte de menor peso da palavra ocupa um endereço maior
+e a parte de maior peso ocupa um endereço menor, designa-se por “big-endian”.
 
-   .. figure:: figures/big_endian.png
-      :name: big_endian
-      :align: center
-      :scale: 25%
+.. figure:: figures/big_endian.png
+   :name: big_endian
+   :align: center
+   :scale: 25%
 
-      Representação em memória de uma palavra de 16 *bits*, alinhada,
-      com posicionamento *big-endian*
+   Representação em memória de uma palavra de 16 *bits*, alinhada,
+   com posicionamento *big-endian*
 
 .. _acesso a valores em memoria:
 
 Acesso a valores em memória
 ---------------------------
 
-   No P16, o acesso a valores em memória faz-se utilizando as instruções LDR e STR.
-   A  instrução LDR copia dados da memória para os registos
-   e a instrução STR copia dados dos registos para a memória.
-   Os parâmetros destas instruções são um registo e uma posição de memória.
-   A especificação do endereço da posição de memória é feita através de registos
-   -- endereçamento indirecto. Este modo de endereçamento consiste em utilizar
-   o conteúdo de registos como endereço de memória. ::
+No P16, o acesso a valores em memória faz-se utilizando as instruções LDR e STR.
+A  instrução LDR copia dados da memória para os registos
+e a instrução STR copia dados dos registos para a memória.
+Os parâmetros destas instruções são um registo e uma posição de memória.
+A especificação do endereço da posição de memória é feita através de registos
+-- endereçamento indirecto. Este modo de endereçamento consiste em utilizar
+o conteúdo de registos como endereço de memória. ::
 
-      ldr    rd, [rn, ...]
-      str    rs, [rn, ...]
+   ldr    rd, [rn, ...]
+   str    rs, [rn, ...]
 
-   Na instrução LDR, o registo **rd** é quem vai receber os dados a ler da memória.
-   Na instrução STR, o registo **rs** é quem vai fornecer os dados a escrever na memória.
-   Em ambas as instruções, o endereço da memória é definido pela expressão entre parêntesis rectos --
-   **[rn, ...]**. O endereço é calculado pela adição do conteúdo de **rn**
-   com um segundo componente que pode ser um registo -- **[rn, rm]**
-   ou uma constante -- **[rn, #constant]**.
+Na instrução LDR, o registo **rd** é quem vai receber os dados a ler da memória.
+Na instrução STR, o registo **rs** é quem vai fornecer os dados a escrever na memória.
+Em ambas as instruções, o endereço da memória é definido pela expressão entre parêntesis rectos --
+**[rn, ...]**. O endereço é calculado pela adição do conteúdo de **rn**
+com um segundo componente que pode ser um registo -- **[rn, rm]**
+ou uma constante -- **[rn, #constant]**.
 
-   Num programa, antes da instrução LDR ou STR
-   é necessário carregar o endereço da variável no registo **rn**.
-   
-   Para simplificar, vamos considerar nos exemplos desta secção,
-   que se utiliza a variante com constante e que esta tem o valor zero
-   -- situação em que se pode usar a sintaxe **ldr  rd, [rn]** ou **str  rd, [rn]**.
+Num programa, antes da instrução LDR ou STR
+é necessário carregar o endereço da variável no registo **rn**.
 
-   .. rubric :: Ler variável de 8 *bits*
+Para simplificar, vamos considerar nos exemplos desta secção,
+que se utiliza a variante com constante e que esta tem o valor zero
+-- situação em que se pode usar a sintaxe **ldr  rd, [rn]** ou **str  rd, [rn]**.
 
-   .. table:: Ler a variável **x**, de 8 *bits*, para R0.
-      :widths: auto
-      :align: center
-      :name: ldrb
+.. rubric :: Ler variável de 8 *bits*
 
-      +------------------------+------------------------+---------------------------------+
-      | .. code-block:: c      | .. code-block:: asm    | .. image:: figures/ldrb.png     |
-      |                        |                        |    :scale: 10%                  |
-      |    uint8_t z, x = 23;  |    ;r0 - z             |                                 |
-      |                        |    ;r1 - address of x  |                                 |
-      |    z = x;              |    ldrb    r0, [r1]    |                                 |
-      +------------------------+------------------------+---------------------------------+
+.. table:: Ler a variável **x**, de 8 *bits*, para R0.
+   :widths: auto
+   :align: center
+   :name: ldrb
 
-   A variável **x**, do tipo ``uint8_t``, representada em memória com 8 *bits*,
-   é alojada na posição de endereço ``0x0005``.
+   +------------------------+------------------------+---------------------------------+
+   | .. code-block:: c      | .. code-block:: asm    | .. image:: figures/ldrb.png     |
+   |                        |                        |    :scale: 10%                  |
+   |    uint8_t z, x = 23;  |    ;r0 - z             |                                 |
+   |                        |    ;r1 - address of x  |                                 |
+   |    z = x;              |    ldrb    r0, [r1]    |                                 |
+   +------------------------+------------------------+---------------------------------+
 
-   No registo R1 foi previamente carregado o endereço da variável **x** (endereço 0x0005).
+A variável **x**, do tipo ``uint8_t``, representada em memória com 8 *bits*,
+é alojada na posição de endereço ``0x0005``.
 
-   A instrução ``ldrb  r0, [r1]`` copia o conteúdo da posição de memória de endereço ``0x0005``
-   -- o valor 0x23 -- para os 8 *bits* menos significativos de R0
-   e afecta os 8 *bits* mais significativos com zero.
-   O valor da variável **x** fica neste momento representado com 16 *bits* no registo R0.
+No registo R1 foi previamente carregado o endereço da variável **x** (endereço 0x0005).
 
-   .. rubric :: Ler variável de 16 *bits*
+A instrução ``ldrb  r0, [r1]`` copia o conteúdo da posição de memória de endereço ``0x0005``
+-- o valor 0x23 -- para os 8 *bits* menos significativos de R0
+e afecta os 8 *bits* mais significativos com zero.
+O valor da variável **x** fica neste momento representado com 16 *bits* no registo R0.
 
-   .. table:: Ler a variável **y**, de 16 *bits*, para R0.
-      :widths: auto
-      :align: center
-      :name: ldr
+.. rubric :: Ler variável de 16 *bits*
 
-      +-----------------------------+-----------------------+----------------------------+
-      | .. code-block:: c           | .. code-block:: asm   | .. image:: figures/ldr.png |
-      |                             |                       |    :scale: 10%             |
-      |    uint16_t w, y = 0x3e7a;  |    ;r0 - w            |                            |
-      |                             |    ;r1 - address of y |                            |
-      |    w = y;                   |    ldr    r0, [r1]    |                            |
-      +-----------------------------+-----------------------+----------------------------+
+.. table:: Ler a variável **y**, de 16 *bits*, para R0.
+   :widths: auto
+   :align: center
+   :name: ldr
 
-   A variável **y**, do tipo ``uint16_t``, representada em memória com 16 *bits*,
-   ocupa as posições de endereços 0x0006 e 0x0007.
+   +-----------------------------+-----------------------+----------------------------+
+   | .. code-block:: c           | .. code-block:: asm   | .. image:: figures/ldr.png |
+   |                             |                       |    :scale: 10%             |
+   |    uint16_t w, y = 0x3e7a;  |    ;r0 - w            |                            |
+   |                             |    ;r1 - address of y |                            |
+   |    w = y;                   |    ldr    r0, [r1]    |                            |
+   +-----------------------------+-----------------------+----------------------------+
 
-   No registo R1 foi previamente carregado o endereço da variável **y** (endereço 0x0006).
+A variável **y**, do tipo ``uint16_t``, representada em memória com 16 *bits*,
+ocupa as posições de endereços 0x0006 e 0x0007.
 
-   A instrução ``ldr  r0, [r1]`` copia dois *bytes* da memória para o registo R0.
-   O conteúdo da posição de memória de endereço 0x0006  -- valor 0x7a --
-   para os 8 *bits* menos significativos de R0
-   e o conteúdo da posição de memória de endereço 0x0007 -- valor 0x3e --
-   para os 8 *bits* mais significativos (posicionamento *little ended*).
+No registo R1 foi previamente carregado o endereço da variável **y** (endereço 0x0006).
 
-   .. rubric :: Escrever em variável de 8 *bits*
+A instrução ``ldr  r0, [r1]`` copia dois *bytes* da memória para o registo R0.
+O conteúdo da posição de memória de endereço 0x0006  -- valor 0x7a --
+para os 8 *bits* menos significativos de R0
+e o conteúdo da posição de memória de endereço 0x0007 -- valor 0x3e --
+para os 8 *bits* mais significativos (posicionamento *little ended*).
 
-   .. table:: Escrever o valor 0x9b na variável **x**.
-      :widths: auto
-      :align: center
-      :name: strb
+.. rubric :: Escrever em variável de 8 *bits*
 
-      +-------------------------+-----------------------+------------------------------+
-      | .. code-block:: c       | .. code-block:: asm   | .. image:: figures/strb.png  |
-      |                         |                       |    :scale: 10%               |
-      |    uint8_t  x;          |    ;r1 - address of x |                              |
-      |                         |    mov    r0, #0x9b   |                              |
-      |    x = 0x9b;            |    strb   r0, [r1]    |                              |
-      +-------------------------+-----------------------+------------------------------+
+.. table:: Escrever o valor 0x9b na variável **x**.
+   :widths: auto
+   :align: center
+   :name: strb
 
-   A variável **x**, do tipo ``uint8_t``, representada em memória com 8 *bits*,
-   é alojada na posição de endereço ``0x0005``.
+   +-------------------------+-----------------------+------------------------------+
+   | .. code-block:: c       | .. code-block:: asm   | .. image:: figures/strb.png  |
+   |                         |                       |    :scale: 10%               |
+   |    uint8_t  x;          |    ;r1 - address of x |                              |
+   |                         |    mov    r0, #0x9b   |                              |
+   |    x = 0x9b;            |    strb   r0, [r1]    |                              |
+   +-------------------------+-----------------------+------------------------------+
 
-   O endereço da variável **x** (endereço 0x0005) foi previamente carregado em R1.
+A variável **x**, do tipo ``uint8_t``, representada em memória com 8 *bits*,
+é alojada na posição de endereço ``0x0005``.
 
-   A instrução ``strb  r0, [r1]`` copia o valor dos 8 *bits* menos significativos de R0
-   (valor 0x9b), para a posição de memória de endereço 0x0005.
-   Esta instrução é indiferente ao valor presente nos 8 *bits* mais significativos de R0.
+O endereço da variável **x** (endereço 0x0005) foi previamente carregado em R1.
 
-   .. rubric :: Escrever em variável de 16 *bits*
+A instrução ``strb  r0, [r1]`` copia o valor dos 8 *bits* menos significativos de R0
+(valor 0x9b), para a posição de memória de endereço 0x0005.
+Esta instrução é indiferente ao valor presente nos 8 *bits* mais significativos de R0.
 
-   .. table:: Escrever o valor 0x0x67a4 na variável **y**.
-      :widths: auto
-      :align: center
-      :name: str
+.. rubric :: Escrever em variável de 16 *bits*
 
-      +---------------------+-------------------------+------------------------------+
-      | .. code-block:: c   | .. code-block:: asm     | .. image:: figures/str.png   |
-      |                     |                         |    :scale: 10%               |
-      |    uint16_t y;      |    ;r1 - address of x   |                              |
-      |                     |    mov   r0, 0xa4       |                              |
-      |    y = 0x67a4       |    movt  r0, 0x67       |                              |
-      |                     |    str   r0, [r1]       |                              |
-      +---------------------+-------------------------+------------------------------+
+.. table:: Escrever o valor 0x0x67a4 na variável **y**.
+   :widths: auto
+   :align: center
+   :name: str
 
-   A variável **y** é alojada em memória nas posições de memória 0x0006 e 0x0007.
+   +---------------------+-------------------------+------------------------------+
+   | .. code-block:: c   | .. code-block:: asm     | .. image:: figures/str.png   |
+   |                     |                         |    :scale: 10%               |
+   |    uint16_t y;      |    ;r1 - address of x   |                              |
+   |                     |    mov   r0, 0xa4       |                              |
+   |    y = 0x67a4       |    movt  r0, 0x67       |                              |
+   |                     |    str   r0, [r1]       |                              |
+   +---------------------+-------------------------+------------------------------+
 
-   O endereço da variável **y** (endereço 0x0006) foi previamente carregado em R1.
+A variável **y** é alojada em memória nas posições de memória 0x0006 e 0x0007.
 
-   A instrução ``str  r0, [r1]`` copia o valor dos 8 *bits* menos significativos de R0 (valor 0xa4)
-   para a posição de memória de endereço 0x0006
-   e o valor dos 8 *bits* mais significativos de R0 (valor 0x67)
-   para a posição de memória de endereço 0x0007 – posicionamento *little ended*.
+O endereço da variável **y** (endereço 0x0006) foi previamente carregado em R1.
+
+A instrução ``str  r0, [r1]`` copia o valor dos 8 *bits* menos significativos de R0 (valor 0xa4)
+para a posição de memória de endereço 0x0006
+e o valor dos 8 *bits* mais significativos de R0 (valor 0x67)
+para a posição de memória de endereço 0x0007 – posicionamento *little ended*.
 
 Valores em *array*
 ------------------
@@ -217,27 +217,27 @@ define-se a posição a que se pretende aceder.
 **imm4** e **imm3** representam valores constantes representados com quatro ou três *bits*, respetivamente.
 
 
-   .. table:: Acesso a *array* de *bytes*.
-      :widths: auto
-      :align: center
-      :name: array_bytes
+.. table:: Acesso a *array* de *bytes*.
+   :widths: auto
+   :align: center
+   :name: array_bytes
 
-      +---------------------------------------------+-------------------------------+--------------------------------------+
-      | .. code-block:: c                           | .. code-block:: asm           | .. image:: figures/array_bytes.png   |
-      |                                             |                               |    :scale: 6%                        |
-      |    uint8_t array[] = {2, 0x23, 0x54, 0x10}; |    ; r0 = address of array    |                                      |
-      |    uint16_t a;                              |    ; r1 = i r2 = a            |                                      |
-      |                                             |        mov   r1, #0           |                                      |
-      |    for (uint16_t i = 0; i < 10; ++i)        |        mov   r4, #10          |                                      |
-      |        a += array[i]                        |        b     for_cond         |                                      |
-      |                                             |    for:                       |                                      |
-      |                                             |        ldrb  r3, [r0, r1]     |                                      |
-      |                                             |        add   r2, r2, r3       |                                      |
-      |                                             |        add   r1, r1, #1       |                                      |
-      |                                             |    for_cond:                  |                                      |
-      |                                             |        cmp   r1, r4           |                                      |
-      |                                             |        blo   for              |                                      |
-      +---------------------------------------------+-------------------------------+--------------------------------------+
+   +---------------------------------------------+-------------------------------+--------------------------------------+
+   | .. code-block:: c                           | .. code-block:: asm           | .. image:: figures/array_bytes.png   |
+   |                                             |                               |    :scale: 6%                        |
+   |    uint8_t array[] = {2, 0x23, 0x54, 0x10}; |    ; r0 = address of array    |                                      |
+   |    uint16_t a;                              |    ; r1 = i r2 = a            |                                      |
+   |                                             |        mov   r1, #0           |                                      |
+   |    for (uint16_t i = 0; i < 10; ++i)        |        mov   r4, #10          |                                      |
+   |        a += array[i]                        |        b     for_cond         |                                      |
+   |                                             |    for:                       |                                      |
+   |                                             |        ldrb  r3, [r0, r1]     |                                      |
+   |                                             |        add   r2, r2, r3       |                                      |
+   |                                             |        add   r1, r1, #1       |                                      |
+   |                                             |    for_cond:                  |                                      |
+   |                                             |        cmp   r1, r4           |                                      |
+   |                                             |        blo   for              |                                      |
+   +---------------------------------------------+-------------------------------+--------------------------------------+
 
 No programa (b) da :numref:`array_bytes` assume-se que o endereço inicial do *array*
 foi previamente carregado no registo R0 (endereço 0x4078).
@@ -246,28 +246,28 @@ O endereço de ``array[i]`` é determinado pela instrução ``ldrb  r3, [r0, r1]
 adicionando o índice i, em R1, ao endereço base do *array* em R0.
 
 
-   .. table:: Acesso a *array* de *words*.
-      :widths: auto
-      :align: center
-      :name: array_words
+.. table:: Acesso a *array* de *words*.
+   :widths: auto
+   :align: center
+   :name: array_words
 
-      +----------------------------------------------------+-------------------------------+--------------------------------------+
-      | .. code-block:: c                                  | .. code-block:: asm           | .. image:: figures/array_words.png   |
-      |                                                    |                               |    :scale: 5%                        |
-      |    int16_t array[] = {2, 0x5022, 0x56, 0x1011};    |    ; r0 = address of array    |                                      |
-      |    int16_t a;                                      |    ; r1 = i r2 = a            |                                      |
-      |                                                    |        mov   r1, #0           |                                      |
-      |    for (uint16_t i = 0; i < 10; ++i)               |        mov   r4, #10          |                                      |
-      |        a += array[i]                               |        b     for_cond         |                                      |
-      |                                                    |    for:                       |                                      |
-      |                                                    |        add   r3, r1, r1       |                                      |
-      |                                                    |        ldr   r3, [r0, r3]     |                                      |
-      |                                                    |        add   r2, r2, r3       |                                      |
-      |                                                    |        add   r1, r1, #1       |                                      |
-      |                                                    |    for_cond:                  |                                      |
-      |                                                    |        cmp   r1, r4           |                                      |
-      |                                                    |        blo   for              |                                      |
-      +----------------------------------------------------+-------------------------------+--------------------------------------+
+   +----------------------------------------------------+-------------------------------+--------------------------------------+
+   | .. code-block:: c                                  | .. code-block:: asm           | .. image:: figures/array_words.png   |
+   |                                                    |                               |    :scale: 5%                        |
+   |    int16_t array[] = {2, 0x5022, 0x56, 0x1011};    |    ; r0 = address of array    |                                      |
+   |    int16_t a;                                      |    ; r1 = i r2 = a            |                                      |
+   |                                                    |        mov   r1, #0           |                                      |
+   |    for (uint16_t i = 0; i < 10; ++i)               |        mov   r4, #10          |                                      |
+   |        a += array[i]                               |        b     for_cond         |                                      |
+   |                                                    |    for:                       |                                      |
+   |                                                    |        add   r3, r1, r1       |                                      |
+   |                                                    |        ldr   r3, [r0, r3]     |                                      |
+   |                                                    |        add   r2, r2, r3       |                                      |
+   |                                                    |        add   r1, r1, #1       |                                      |
+   |                                                    |    for_cond:                  |                                      |
+   |                                                    |        cmp   r1, r4           |                                      |
+   |                                                    |        blo   for              |                                      |
+   +----------------------------------------------------+-------------------------------+--------------------------------------+
 
 No programa da :numref:`array_words`, os elementos do *array* são valores representados a 16 *bits*
 -- ocupam duas posições de memória.
@@ -313,28 +313,28 @@ ler o conteúdo da variável de memória para registo;
 incrementar esse registo;
 voltar a escrever esse registo na variável em memória.
 
-   .. table:: Carregamento de endereço em registo.
-      :widths: auto
-      :align: center
-      :name: load_address
+.. table:: Carregamento de endereço em registo.
+   :widths: auto
+   :align: center
+   :name: load_address
 
-      +----------------------------------+-------------------------------------+
-      | .. code-block:: c                | .. code-block:: asm                 |
-      |                                  |    :linenos:                        |
-      |                                  |                                     |
-      |    uint8_t x = 55;               |        .data                        |
-      |                                  |    x:                               |
-      |    x++;                          |        .byte  0x55                  |
-      |                                  |                                     |
-      |                                  |        .text                        |
-      |                                  |        ldr    r1, addressof_x       |
-      |                                  |        ldrb   r0, [r1]              |
-      |                                  |        add    r0, r0, #1            |
-      |                                  |        strb   r0, [r1]              |
-      |                                  |                                     |
-      |                                  |    addressof_x:                     |
-      |                                  |        .word  x                     |
-      +----------------------------------+-------------------------------------+
+   +----------------------------------+-------------------------------------+
+   | .. code-block:: c                | .. code-block:: asm                 |
+   |                                  |    :linenos:                        |
+   |                                  |                                     |
+   |    uint8_t x = 55;               |        .data                        |
+   |                                  |    x:                               |
+   |    x++;                          |        .byte  0x55                  |
+   |                                  |                                     |
+   |                                  |        .text                        |
+   |                                  |        ldr    r1, addressof_x       |
+   |                                  |        ldrb   r0, [r1]              |
+   |                                  |        add    r0, r0, #1            |
+   |                                  |        strb   r0, [r1]              |
+   |                                  |                                     |
+   |                                  |    addressof_x:                     |
+   |                                  |        .word  x                     |
+   +----------------------------------+-------------------------------------+
 
 A variável **x** é definida em linguagem *assembly*
 pela *label* **x:** seguida da diretiva ``.byte 0x55``,
@@ -373,12 +373,12 @@ no espaço de endereçamento, a que *label* se encontra da instrução **ldr  rd
 em número de *words* (palavras de 16 *bits*),
 no sentido crescente dos endereços.
 
-   .. figure:: figures/ldr_label.png
-      :name: ldr_label
-      :align: center
-      :scale: 20%
+.. figure:: figures/ldr_label.png
+   :name: ldr_label
+   :align: center
+   :scale: 20%
 
-      Carregamento em registo do endereço de uma variável
+   Carregamento em registo do endereço de uma variável
 
 A instrução ``ldr  r1, addressof_x`` carrega 0x6037 em R1 (endereço da variável **x**).
 Este valor está armazenado em memória no endereço 0x4022 (posição indicada por ``addressof_x:``).
