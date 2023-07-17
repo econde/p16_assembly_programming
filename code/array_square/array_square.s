@@ -83,7 +83,7 @@ array_square_for:
 	mov	r1, r0
 	bl	multiply
 	add	r1, r7, r7
-	str	r0, [r5, r1]
+	str	r0, [r4, r1]
 	add	r7, r7, #1
 	b	array_square_for
 array_square_for_end:
