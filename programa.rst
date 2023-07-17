@@ -100,7 +100,7 @@ e a inicialização do registo *stack pointer* (SP) antes de se invocar a funç�
 
 No exemplo, a área de memória para *stack* é definida com a directiva **.space**
 com a dimensão de 1024 *bytes*, confinada entre o início da secção *.stack*
-e a *label* **stack_top** (linhas 26 a 28).
+e a *label* **stack_top** (linhas 24 a 26).
 O registo SP é inicializado, na linha 6, com o valor da *label* **stack_top**
 -- que corresponde ao endereço a seguir ao endereço mais alto da secção **.stack**
 -- porque no P16 o empilhamento evolui no sentido descendente
@@ -120,3 +120,35 @@ ser escrito depois da linha 28, repetindo-se a diretiva de secção sem alterar 
 
 A localização das secções pode ser alterada através de opções de invocação do p16as
 (`ver aqui <https://p16-assembler.readthedocs.io/pt/latest/pas_utilizacao.html#localizacao-das-seccoes>`_).
+
+Entre as linhas 7 e 9 encontra-se uma sequência de instruções 
+que realiza um salto com ligação para a função ``main``,
+equivalente a ``bl  main``.
+Este código visa ultrapassar a limitação de alcance da instrução BL.
+
+O código binário da instrução BL dispõe de um número limitado de *bits*
+para codificar o deslocamento a dar ao PC. Essa limitação de codificação
+tem como efeito uma limitação no alcance do salto.
+
+Esse campo é codificado com 11 *bits* em código de complementos
+-- um valor positivo provoca um avanço no PC e um valor negativo provoca um recuo.
+O alcace do salto está limitado a +1023 ou -1024 posições de memória.
+Como os saltos são sempre para endereços pares,
+o *bit* de menor peso não é registado no código da instrução.
+E na prática o intervalo situa-se entre os valores +1022 e -1024.
+
+A sequência ::
+
+   mov   r0, pc
+   add   lr, r0, #4
+   ldr   pc, addressof_main
+
+supera a limitação de alcance, ao carregar diretamente no PC
+o endereço da função ``main`` -- ``ldr   pc, addressof_main``.
+As duas instruções anteriores servem para carregar em LR
+o endereço de retorno.
+A instrução ``mov   r0, pc`` coloca em R0 o valor atual de PC,
+que é o endereço da instrução add,
+e a instrução ``add  lr, r0, #4``, ao adicionar quatro a R0,
+coloca em LR o endereço da instrução que se encontrar a seguir a ldr.
+
