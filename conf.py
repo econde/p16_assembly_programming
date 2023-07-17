@@ -22,7 +22,7 @@ copyright = '2022, Ezequiel Conde'
 author = 'Ezequiel Conde'
 
 # The full version, including alpha/beta/rc tags
-release = '2022.12'
+release = '2023.06'
 
 
 # -- General configuration ---------------------------------------------------
