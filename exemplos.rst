@@ -21,14 +21,14 @@ Um algoritmo comummente utilizado baseia-se na aplicação das seguintes express
      = M . 2^{n-1} . m_{n-1} + M . 2^{n-2} . m_{n-2} + ... + M . 4 . m_2 + M . 2 . m_1 + M . m_0
 
 onde m\ :sub:`x` representa cada um dos dígitos do multiplicador (m),
-expresso em binário, com **x** a variar entre 0 e n – 1,
+expresso em binário, com **x** a variar entre 0 e n - 1,
 sendo n o número de *bits* do multiplicador (m).
 A última expressão é um somatório de parcelas da forma M . 2\ :sup:`x` . m\ :sub:`x`.
 A multiplicação de M por uma potência inteira de 2 (M.2\ :sup:`x`),
 pode ser realizada por uma instrução de deslocamento para a esquerda de M.
 O produto de M.2\ :sup:`x` por m\ :sub:`x`, será igual a M.2\ :sup:`x`
 se o bit de índice **x** do multiplicador (m) for igual a um, ou será zero,
-no caso de m\ :sub:`x` ser zero. A sequência conjunta destas três acções
+no caso de m\ :sub:`x` ser zero. A sequência conjunta destas três ações
 -- deslocamento de M, produto lógico pelo *bit* m\ :sub:`x`
 e adição deste resultado parcial, em somatório, até final
 -- justifica a designação *shift-and-add*,
@@ -125,7 +125,7 @@ Pesquisar um valor num *array*
 
 Neste exemplo é apresentada a programação da função **search**
 que procura o valor ``value`` no *array* ``array`` com ``array_size`` elementos.
-Caso encontre retorna o indíce da posição onde encontrou,
+Caso encontre retorna o índice da posição onde encontrou,
 caso não encontre retorna -1. ::
 
    int16_t search(uint16_t array[], uint8_t array_size, uint16_t value);
@@ -141,7 +141,7 @@ Na :numref:`search1` é apresentado um programa de utilização da função
    :name: search1
 
 Na :numref:`search2` é apresentada uma tradução do programa da :numref:`search1`
-para liguagem *assembly*. Da linha 1 até à linha 14 apresenta-se a definicão
+para linguagem *assembly*. Da linha 1 até à linha 14 apresenta-se a definição
 dos *arrays* **table1** e **table2** e das variáveis **p** e **q**.
 A escrita de sucessivos valores como argumento da diretiva **.word** corresponde
 a reservar em memória uma sequência de *words* iniciadas com esses valores.

@@ -34,7 +34,7 @@ representado em binário, numa palavra de 16 *bits*, armazenada em memória.
 O *byte* de menor peso da palavra (0x06) ocupa a posição de memória de endereço 0x0024
 e o *byte* de maior peso da palavra (0x01) ocupa a posição de memória de endereço 0x0025.
 O posicionamento em que a parte de menor peso da palavra ocupa um endereço menor
-e a parte de maior peso ocupa um endereço maior, designa-se por “little-endian”.
+e a parte de maior peso ocupa um endereço maior, designa-se por *little-endian*.
 
 .. figure:: figures/little_endian.png
    :name: little_endian
@@ -48,7 +48,7 @@ A :numref:`big_endian` mostra uma representação equivalente à da :numref:`lit
 mas em que o *byte* de menor peso do valor ocupa a posição de memória de endereço 0x0025
 e o *byte* de maior peso ocupa a posição de endereço 0x0024.
 O posicionamento em que a parte de menor peso da palavra ocupa um endereço maior
-e a parte de maior peso ocupa um endereço menor, designa-se por “big-endian”.
+e a parte de maior peso ocupa um endereço menor, designa-se por "big-endian".
 
 .. figure:: figures/big_endian.png
    :name: big_endian
@@ -68,7 +68,7 @@ A  instrução LDR copia dados da memória para os registos
 e a instrução STR copia dados dos registos para a memória.
 Os parâmetros destas instruções são um registo e uma posição de memória.
 A especificação do endereço da posição de memória é feita através de registos
--- endereçamento indirecto. Este modo de endereçamento consiste em utilizar
+-- endereçamento indireto. Este modo de endereçamento consiste em utilizar
 o conteúdo de registos como endereço de memória. ::
 
    ldr    rd, [rn, ...]
@@ -76,7 +76,7 @@ o conteúdo de registos como endereço de memória. ::
 
 Na instrução LDR, o registo **rd** é quem vai receber os dados a ler da memória.
 Na instrução STR, o registo **rs** é quem vai fornecer os dados a escrever na memória.
-Em ambas as instruções, o endereço da memória é definido pela expressão entre parêntesis rectos --
+Em ambas as instruções, o endereço da memória é definido pela expressão entre parêntesis retos --
 **[rn, ...]**. O endereço é calculado pela adição do conteúdo de **rn**
 com um segundo componente que pode ser um registo -- **[rn, rm]**
 ou uma constante -- **[rn, #constant]**.
@@ -110,7 +110,7 @@ No registo R1 foi previamente carregado o endereço da variável **x** (endereç
 
 A instrução ``ldrb  r0, [r1]`` copia o conteúdo da posição de memória de endereço ``0x0005``
 -- o valor 0x23 -- para os 8 *bits* menos significativos de R0
-e afecta os 8 *bits* mais significativos com zero.
+e afeta os 8 *bits* mais significativos com zero.
 O valor da variável **x** fica neste momento representado com 16 *bits* no registo R0.
 
 .. rubric :: Ler variável de 16 *bits*
@@ -137,7 +137,7 @@ A instrução ``ldr  r0, [r1]`` copia dois *bytes* da memória para o registo R0
 O conteúdo da posição de memória de endereço 0x0006  -- valor 0x7a --
 para os 8 *bits* menos significativos de R0
 e o conteúdo da posição de memória de endereço 0x0007 -- valor 0x3e --
-para os 8 *bits* mais significativos (posicionamento *little ended*).
+para os 8 *bits* mais significativos (posicionamento *little endian*).
 
 .. rubric :: Escrever em variável de 8 *bits*
 
@@ -165,7 +165,7 @@ Esta instrução é indiferente ao valor presente nos 8 *bits* mais significativ
 
 .. rubric :: Escrever em variável de 16 *bits*
 
-.. table:: Escrever o valor 0x0x67a4 na variável **y**.
+.. table:: Escrever o valor 0x67a4 na variável **y**.
    :widths: auto
    :align: center
    :name: str
@@ -186,7 +186,7 @@ O endereço da variável **y** (endereço 0x0006) foi previamente carregado em R
 A instrução ``str  r0, [r1]`` copia o valor dos 8 *bits* menos significativos de R0 (valor 0xa4)
 para a posição de memória de endereço 0x0006
 e o valor dos 8 *bits* mais significativos de R0 (valor 0x67)
-para a posição de memória de endereço 0x0007 – posicionamento *little ended*.
+para a posição de memória de endereço 0x0007 – posicionamento *little endian*.
 
 Valores em *array*
 ------------------

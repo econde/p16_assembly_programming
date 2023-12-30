@@ -7,19 +7,19 @@ Em seguida lista-se um conjunto de regras geralmente utilizadas na programação
 e que são aplicadas nos programas de exemplo.
 
 * O texto do programa é escrito em letra minúscula,
-  excepto os identificadores de constantes.
+  exceto os identificadores de constantes.
 
 * Nos identificadores formados por várias palavras
   usa-se como separador o carácter ‘_’ (sublinhado).
 
 * O programa é disposto na forma de uma tabela de quatro colunas.
   Na primeira coluna insere-se apenas a *label* (se existir),
-  na segunda coluna a mnemónica da instrução ou a directiva,
-  na terceira coluna os parâmetros da instrução ou da directiva
+  na segunda coluna a mnemónica da instrução ou a diretiva,
+  na terceira coluna os parâmetros da instrução ou da diretiva
   e na quarta coluna os comentários até ao fim da linha
   (começados por \';\' ou envolvidos por /\* \*/).
 
-* Cada linha contém apenas uma label, uma instrução ou uma directiva.
+* Cada linha contém apenas uma label, uma instrução ou uma diretiva.
 
 * Para definir as colunas deve usar-se o carácter TAB
   configurado com a largura de oito espaços.

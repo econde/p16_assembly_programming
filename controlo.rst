@@ -57,11 +57,11 @@ implica R0 menor que R1, que a verificar-se, significa que **i** é menor que **
    | \(a\)                            | \(b\)                               |
    +----------------------------------+-------------------------------------+
 
-A instrução ``cmp r5, r3`` realiza a subtracção R5 – R3 e afecta a *flag* Z com 1,
+A instrução ``cmp r5, r3`` realiza a subtração R5 -- R3 e afeta a *flag* Z com 1,
 se a diferença for zero, significa que **i** (R5) e **j** (R3) são iguais.
-No caso de *i* ser diferente de *j*, a *flag* Z é afectada com 0
+No caso de *i* ser diferente de *j*, a *flag* Z é afetada com 0
 e a instrução ``bne if_else`` "salta por cima" do bloco *if* (linhas 4 a 6)
-directamente para o código do bloco *else* (linhas 8 e 9).
+diretamente para o código do bloco *else* (linhas 8 e 9).
 No caso de **i** ser igual a **j** a instrução ``bne if_else`` não realiza salto
 e executa o bloco *if* (linhas 4 a 6).
 Este bloco termina com um salto incondicional (linha 6),
@@ -156,14 +156,14 @@ O programa (b) da :numref:`while` é escrito e executado pela ordem da linguagem
 -- primeiro a avaliação da condição (linhas 3 e 4) e depois o bloco de instruções do *while* (linhas 5 e 6).
 Com esta programação, o processador executa 5 instruções durante o ciclo (linhas 3 a 7),
 entre elas duas instruções *branch* (linhas 4 e 7).
-No program (c) da :numref:`while` o programa é escrito como num *do while*,
+No programa (c) da :numref:`while` o programa é escrito como num *do while*,
 com a avaliação da condição no final (linhas 8 e 9).
 O *while* começa com um salto incondicional (linha 3) para a avaliação da condição (linhas 8 e 9),
 porque esta deve ser executada em primeiro lugar.
 Esta programação resulta na supressão de uma instrução *branch* durante o ciclo,
 relativamente à programação apresentada na versão (b), o que a torna preferível.
-A supressão de uma instrução num ciclo, pode equivaler a uma redução significtiva de processamento,
-porque essa instrução é executada múliplas vezes.
+A supressão de uma instrução num ciclo, pode equivaler a uma redução significativa de processamento,
+porque essa instrução é executada múltiplas vezes.
 
 for
 ---
@@ -204,5 +204,5 @@ A instrução ::
        expression3;
    }
 
-A programação *assembly* apresentada na :numref:`for` (b) reflecte esta equivalência,
+A programação *assembly* apresentada na :numref:`for` (b) reflete esta equivalência,
 com o *while* implementado na variante mais eficiente -- :numref:`while` (c).

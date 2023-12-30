@@ -5,11 +5,11 @@ O *stack* é uma zona de memória para salvaguarda temporária
 de dados do programa de diversa natureza.
 O seu nome advém do tipo de estrutura de dados que implementa ser do tipo *last-in-first-out* (LIFO),
 também designada por *stack*.
-Esta estrutura de dados tem um funcionamento análogo a uma pilha de objectos:
-só se consegue retirar da pilha o objecto que se encontra no topo
+Esta estrutura de dados tem um funcionamento análogo a uma pilha de objetos:
+só se consegue retirar da pilha o objeto que se encontra no topo
 -- o que foi lá colocado mais recentemente --
-e só se consegue colocar um novo objecto sobre o topo da pilha
--- apenas sobre o objecto anteriormente lá colocado.
+e só se consegue colocar um novo objeto sobre o topo da pilha
+-- apenas sobre o objeto anteriormente lá colocado.
 
 O P16 dispõe de um registo específico e duas instruções para manusear o *stack*.
 O registo R13, neste contexto designado *stack pointer* (SP),
@@ -54,7 +54,7 @@ por decrementar o SP de duas unidades passando para 0x4006.
 Em seguida escreve o *byte* menos significativo de R11 (0x55)
 na posição de endereço 0x4006
 e o byte mais significativo de R11 (0x33) na posição de endereço 0x4007.
-O posicionamento dos *bytes* segue o critério *little-ended*.
+O posicionamento dos *bytes* segue o critério *little-endian*.
 
 
 .. figure:: figures/pop.png

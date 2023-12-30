@@ -6,6 +6,7 @@ O conjunto dos números naturais têm uma representação direta
 e o conjunto de números relativos são codificados em código dos complementos.
 Na :numref:`tipos_c_kotlin` apresentam-se os identificadores de tipo,
 assim como as dimensões de representação nas linguagens Kotlin e C.
+
 Como a linguagem C não define dimensões concretas para
 os tipos numéricos ``char``, ``int``, ``short`` e ``long``,
 foi definido, ao nível da `biblioteca normalizada <https://en.cppreference.com/w/c/types/integer>`_,
@@ -42,7 +43,7 @@ e a variante ``intXX_t`` representa valores no conjunto dos números relativos.
    +---------------+----------------+----------------------+------------------------+------------+------------+------------+
 
 O domínio de valores representável depende da dimensão da palavra em número de *bits*.
-Na :numref:`tipos_dimensoes` apresentam-se os dimínios de valores representáveis
+Na :numref:`tipos_dimensoes` apresentam-se os domínios de valores representáveis
 para as dimensões de palavra de 8, 16, 32 e 64 *bits* para números naturais ou relativos.
 
 A escolha, por parte do programador, do tipo da variável a empregar,

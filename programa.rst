@@ -16,7 +16,7 @@ e secção para o código do programa -- **.text**.
 
    Composição de um programa por secções
 
-Após a acção *reset* o P16 passa a executar código a partir do endereço 0x0000.
+Após a ação *reset* o P16 passa a executar código a partir do endereço 0x0000.
 Por isso, a secção **.startup** deve ser localizada no endereço 0x0000
 (é o que acontece por omissão, se, como é usual,
 for esta a primeira secção do ficheiro fonte).
@@ -25,7 +25,7 @@ As restantes secções podem ser localizadas em qualquer endereço do espaço de
 Em computadores de uso genérico, em que o espaço de endereçamento é preenchido,
 no todo ou em parte, por memória contígua,
 a ordem de localização das secções costuma ser:
-código, constantes, variáveis inicializadas, variáveis inicilizadas com zero
+código, constantes, variáveis inicializadas, variáveis inicializadas com zero
 e por fim o *stack*.
 
 Em computadores de uso específico (sistemas embebidos) o espaço de memória
@@ -98,7 +98,7 @@ entendido como uma cadeia hierárquica de chamadas a funções,
 conforme ocorre na linguagem C, é necessário definir a área de memória dedicada ao *stack*
 e a inicialização do registo *stack pointer* (SP) antes de se invocar a função **main**.
 
-No exemplo, a área de memória para *stack* é definida com a directiva **.space**
+No exemplo, a área de memória para *stack* é definida com a diretiva **.space**
 com a dimensão de 1024 *bytes*, confinada entre o início da secção *.stack*
 e a *label* **stack_top** (linhas 24 a 26).
 O registo SP é inicializado, na linha 6, com o valor da *label* **stack_top**

@@ -10,7 +10,7 @@ Considerando que as variáveis **a** e  **b** se encontram representadas nos reg
 afetar **a** com **b** corresponde a executar a instrução **mov rd, rs**
 que copia o conteúdo do registo R1 para R0.
 
-.. table:: Afectação de variável com outra variável
+.. table:: Afetação de variável com outra variável
    :widths: auto
    :align: center
    :name: afetacao_com_variavel
@@ -28,7 +28,7 @@ que copia o conteúdo do registo R1 para R0.
 Afetação com constante
 ----------------------
 As constantes podem ser escritas nas linguagens de programação em diversas bases de numeração,
-utilizando-se para cada base uma notação sintatica própria.
+utilizando-se para cada base uma notação sintática própria.
 As bases e notações mais usuais estão representadas na :numref:`constantes`
 
 .. table:: Definição de constantes numéricas
@@ -58,7 +58,7 @@ na parte mais significativa do registo e mantém o conteúdo da parte menos sign
 Para carregar valores numéricos entre 0 e 255 pode utilizar-se apenas uma instrução **mov**,
 para valores maiores utiliza-se uma sequência **mov - movt**.
 
-.. table:: Afectação com constante
+.. table:: Afetação com constante
    :widths: auto
    :align: center
    :name: afetacao_constante
@@ -103,7 +103,7 @@ e assim formar o valor 0x1234 em R0.
 
 :numref:`afetacao_constante` (d) – exemplifica uma programação genérica para qualquer valor numérico
 no domínio de representação do tipo int16_t ou uint16_t.
-A directiva ``.equ VALUE, -2000`` significa que no texto do programa,
+A diretiva ``.equ VALUE, -2000`` significa que no texto do programa,
 onde aparece ``VALUE`` pode ler-se ``-2000``.
 Este valor tem uma representação a 16 *bits* equivalente a 0xf830.
 A expressão ``VALUE & 0xff`` é igual a 0x30 e a expressão ``(VALUE >> 8) & 0xff`` é igual 0xf8.
@@ -188,7 +188,7 @@ Adição a 32 *bits*
 
 Os valores representados a 32 *bits* são guardados no processador em dois registos.
 A variável **a** é guardada nos registos R0 e R1, com a parte menos significativa em R0
-e a mais significativa em R1. As restantes variáves são noutros registos de modo semelhante.
+e a mais significativa em R1. As restantes variáveis são guardadas noutros registos, de modo semelhante.
 
 A operação de adição das variáveis **c** e **d** é realizada em dois passos.
 No primeiro passo a instrução ``add  r0, r2, r4`` adiciona
@@ -391,7 +391,7 @@ enquanto o programa da :numref:`variable_shift` (c) demora o tempo igual ao de 8
 Afetar um *bit* com 1
 ^^^^^^^^^^^^^^^^^^^^^
 
-Afectar o *bit* de peso três da variável **a** com o valor 1,
+Afetar o *bit* de peso três da variável **a** com o valor 1,
 mantendo o valor dos restantes *bits*.
 
 A instrução ``mov r1, #(1 << 3)`` coloca o valor ``0000 0000 0000 1000`` em R1.
@@ -400,7 +400,7 @@ entre os *bits* das mesmas posições de R0 e R1.
 O resultado é o valor original de R0 quando operado com 0 em R1 -- elemento neutro --
 ou o valor 1 quando operado com 1 em R1 -- elemento absorvente.
 
-.. table:: Afectar o *bit* três de **a** com 1.
+.. table:: Afetar o *bit* três de **a** com 1.
    :widths: auto
    :align: center
    :name: set_bit
@@ -416,7 +416,7 @@ ou o valor 1 quando operado com 1 em R1 -- elemento absorvente.
 Afetar um *bit* com 0
 ^^^^^^^^^^^^^^^^^^^^^
 
-Afectar o *bit* de peso doze da variável **a** com o valor 0,
+Afetar o *bit* de peso doze da variável **a** com o valor 0,
 mantendo o valor dos restantes *bits*.
 
 As instruções ``mov r1, #(~(1 << 12) & 0xff)`` e ``movt r1, #(~(1 << 12) >> 8)``
@@ -426,7 +426,7 @@ entre os *bits* das mesmas posições de R0 e R1.
 O resultado é o valor original de R0 quando operado com 1 em R1 -- elemento neutro --
 ou o valor 0 quando operado com 0 em R1 -- elemento absorvente.
 
-.. table:: Afectar o *bit* três de **a** com 0.
+.. table:: Afetar o *bit* três de **a** com 0.
    :widths: auto
    :align: center
    :name: clear_bit
@@ -444,10 +444,10 @@ ou o valor 0 quando operado com 0 em R1 -- elemento absorvente.
 Afetar um *bit* de variável com o *bit* de outra variável
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Afectar o *bit* de peso quatro da variável **a**
+Afetar o *bit* de peso quatro da variável **a**
 com o valor do *bit* de peso treze da variável **b**, mantendo os restantes *bits*.
 
-.. table:: Afectar o *bit* quatro de **a** com o valor do *bit* treze de **b**.
+.. table:: Afetar o *bit* quatro de **a** com o valor do *bit* treze de **b**.
    :widths: auto
    :align: center
    :name: assign_bit
@@ -515,7 +515,7 @@ recebem o valor zero no caso de valores naturais
 ou o valor do *bit* de sinal no caso de valores relativos.
 
 Nos exemplos da :numref:`convert_to_wider` a conversão de 8 para 16 *bits* dá-se
-ao carregar as contantes nos registos do processador.
+ao carregar as constantes nos registos do processador.
 Como o P16 realiza apenas operações a 16 *bits*,
 os valores originalmente representados 8 *bits* devem ser representados a 16 *bits*
 ao serem carregados nos registos do processador.
@@ -600,7 +600,7 @@ Avaliação de condições
 
 A avaliação de expressões booleanas
 consiste em realizar operações aritméticas ou lógicas
-que afectem as *flags*.
+que afetem as *flags*.
 Estas operações devem ser escolhidas de modo que a análise do valor das *flags*
 seja conclusiva em relação àquilo que se quer avaliar.
 
@@ -618,12 +618,12 @@ Comparação de valores numéricos
    | **!=** diferença | **<** menor que   | **<=** menor ou igual a    |
    +------------------+-------------------+----------------------------+
 
-As comparações de valores numéricos baseiam-se no valor das *flags* N, V, C e/ou Z,
-resultante de uma operação de subtracção.
-A instrução de subtracção que normalmente se usa é a instrução **cmp  rn, rm**,
+A comparação de valores numéricos baseia-se no valor das *flags* N, V, C e/ou Z,
+resultante de uma operação de subtração.
+A instrução de subtração que normalmente se usa é a instrução **cmp  rn, rm**,
 que é idêntica à instrução **sub  rd, rn, rm**,
 com a diferença de não se aproveitar o resultado
-(a diferença dos  operandos), apenas as *flags* são afectadas
+(a diferença dos  operandos), apenas as *flags* são afetadas
 em conformidade com o resultado.
 
 .. table:: Comparação \"igual a\".
@@ -652,7 +652,7 @@ Esta instrução transfere a execução para a posição do programa indicada pe
 
 A instrução BZC tem o nome alternativo BNE (*Branch if Not Equal*), que permite
 escrever o programa em *assembly* de forma mais direta.
-A nmemónica NE corresponde à *flag* Z ser 0,
+A mnemónica NE corresponde à *flag* Z ser 0,
 porque a *flag* Z é afetada com 0 se os operandos não forem iguais.
 Em coerência, a instrução BZS (*Branch if flag Zero is Set*)
 tem o nome alternativo BEQ (*Branch if Equal*).
@@ -684,7 +684,7 @@ Esta instrução transfere a execução para a posição do programa indicada pe
 
 A instrução BCC tem o nome alternativo BHS (*Branch if Higher or Same*).
 Onde está a ``bcc  if_end`` poderia estar ``bhs  if_end``.
-A nmemónica HS corresponde à *flag* C ser 0,
+A mnemónica HS corresponde à *flag* C ser 0,
 o que acontece se numa instrução CMP ou SUB o subtraendo for maior ou igual ao subtrator.
 
 A sequência ::
@@ -715,7 +715,7 @@ com base na mesma instrução ``cmp r0, r1`` a condição de salto seria a contr
 à do programa da :numref:`compare_less_than` -- seria "saltar" se menor ou igual (*Lower or Same*).
 
 Como no P16 não existe a suposta instrução de salto BLS,
-a solução apresentada realiza a subtracção com os operandos em posições invertidas
+a solução apresentada realiza a subtração com os operandos em posições invertidas
 (``cmp  r1, r0``) e continua a aplicar BHS.
 
 A instrução ``cmp  r1, r0`` afeta a *flag* C com 1 se **a** for maior que **b**
@@ -753,8 +753,8 @@ Testar o valor de um *bit*
 
 Testar o valor de um *bit* de uma variável consiste em fazer refletir
 o valor desse *bit* numa das *flags* do processador.
-Para isso realizam-se operações sobre a variável que tranfiram o valor desse *bit*
-para a uma *flag*.
+Para isso realizam-se operações sobre a variável que transfiram o valor desse *bit*
+para uma *flag*.
 
 .. table:: Testar o valor de um *bit*
    :widths: auto
@@ -801,51 +801,55 @@ Em ambos os casos a instrução *branch* "salta por cima" da instrução
 Valores booleanos
 -----------------
 
-Em linguagem C não existem variáveis do tipo booleano.
-No entanto qualquer valor numérico do tipo char, short, int ou long
-pode ser avaliado do ponto de vista booleano.
-O critério é o seguinte: o valor numérico zero é avaliado como **falso**;
-um valor numérico diferente de zero é avaliado como **verdadeiro**.
+Em linguagem C uma variável do tipo ``bool`` pode assumir os valores ``true`` ou ``false``.
+Em memória, uma variável do tipo ``bool`` ocupa um *byte* (uma posição de memória).
+O valor numérico zero é avaliado como ``false`` e
+um valor numérico diferente de zero é avaliado como ``true``.
+
+Qualquer valor numérico do tipo char, short, int ou long
+pode também ser avaliado como booleano, segundo o mesmo critério.
 
 .. table:: Avaliação booleana de uma variável
    :widths: auto
    :align: center
    :name: bool_test
 
-   +------------------------+----------------------+------------------------+
-   | .. code-block:: c      | .. code-block:: c    | .. code-block:: asm    |
-   |                        |                      |                        |
-   |    int a, b;           |    int a, b;         |    ; a = r0   b = r1   |
-   |                        |                      |       add   r0, r0, #0 |
-   |    if (a)              |    if (a != 0)       |       bzc   if_end     |
-   |        b = 3           |        b = 3         |       mov   r1, #3     |
-   |                        |                      |    if_end:             |
-   +------------------------+----------------------+------------------------+
-   | .. code-block:: c      | .. code-block:: c    | .. code-block:: asm    |
-   |                        |                      |                        |
-   |    int a, b;           |    int a, b;         |    ; a = r0   b = r1   |
-   |                        |                      |       add   r0, r0, #0 |
-   |    if (!a)             |    if (a == 0)       |       bzs   if_end     |
-   |        b = 3           |        b = 3         |       mov   r1, #3     |
-   |                        |                      |    if_end:             |
-   +------------------------+----------------------+------------------------+
-   | \(a\)                  | \(b\)                | \(c\)                  |
-   +------------------------+----------------------+------------------------+
+   +------------------------+------------------------+----------------------+------------------------+
+   | .. code-block:: c      | .. code-block:: c      | .. code-block:: c    | .. code-block:: asm    |
+   |                        |                        |                      |                        |
+   |    bool a;             |    int a, b;           |    int a, b;         |    ; a = r0   b = r1   |
+   |    int b;              |                        |                      |       add   r0, r0, #0 |
+   |                        |                        |                      |       bzc   if_end     |
+   |    if (a)              |    if (a)              |    if (a != 0)       |       mov   r1, #3     |
+   |        b = 3           |        b = 3           |        b = 3         |    if_end:             |
+   +------------------------+------------------------+----------------------+------------------------+
+   | .. code-block:: c      | .. code-block:: c      | .. code-block:: c    | .. code-block:: asm    |
+   |                        |                        |                      |                        |
+   |    bool a;             |    int a, b;           |    int a, b;         |    ; a = r0   b = r1   |
+   |    int b;              |                        |                      |       add   r0, r0, #0 |
+   |                        |                        |                      |       bzs   if_end     |
+   |    if (!a)             |    if (!a)             |    if (a == 0)       |       mov   r1, #3     |
+   |        b = 3           |        b = 3           |        b = 3         |    if_end:             |
+   +------------------------+------------------------+----------------------+------------------------+
+   | \(a\)                  | \(a\)                  | \(b\)                | \(c\)                  |
+   +------------------------+------------------------+----------------------+------------------------+
 
-No programa :numref:`bool_test` o código das colunas (a) e (b) é equivalente.
-Em ambos os casos se pretende avaliar se a variável **a** é igual ou diferente de zero.
+Na :numref:`bool_test`,  no que concerne à expressão do *if*,
+o código da coluna (a) trata de avaliar ser a variável ``a`` tem o valor ``true`` ou ``false``.
+Nas colunas (b) e (c), trata de avaliar ser a variável ``a`` é igual ou diferente de zero.
+O que é equivalente, segundo o critério de representação dos valores booleanos.
+
 A instrução ``add   r0, r0, #0`` ao adicionar zero a R0 não altera o valor original
-mas afecta a flag Z em conformidade com o valor de **a**.
+mas afeta a flag Z em conformidade com o valor de **a**.
 -- se **a** for zero a *flag* Z recebe 1; se **a** for diferente de zero a *flag* Z recebe 0.
-A *flag* Z é afetada com o valor contrário ao valor booleano.
+A *flag* Z é afetada com o valor contrário ao valor booleano da expressão.
 
-Das operações de comparação (==, !=, <, >, <=, >=) resultam valores booleanos – verdadeiro ou falso.
+As operações de comparação (==, !=, <, >, <=, >=) produzem valores booleanos -- ``true`` ou ``false``.
 
-Em linguagem C um valor booleano pode ser afectado a uma variável de qualquer tipo numérico
+Em linguagem C, um valor booleano pode ser afetado a uma variável de qualquer tipo numérico
 ou ser operado com operadores numéricos.
-Para este efeito é necessário convertor o valor booleano para valor numérico.
-O critério é o seguinte: o valor booleano **falso** é equivalente ao valor numérico **zero**
-e o valor booleano **verdadeiro** é equivalente ao valor numérico **um**.
+Para este efeito, o valor booleano ``false`` é convertido no valor numérico **zero**
+e o valor booleano ``true`` é convertido no valor numérico **um**.
 
 .. table:: Afetação com expressão booleana.
    :widths: auto
@@ -866,10 +870,10 @@ e o valor booleano **verdadeiro** é equivalente ao valor numérico **um**.
    | \(a\)                            | \(b\)                               |
    +----------------------------------+-------------------------------------+
 
-No programa (a) da :numref:`assign_bool`, a variável **y** é afectada com o valor zero ou um,
+No programa (a) da :numref:`assign_bool`, a variável **y** é afetada com o valor zero ou um,
 resultante da conversão para valor numérico, do valor booleano resultado da expressão x == 20.
 
-No programa (b) da :numref:`assign_bool`, a instrução ``cmp  r0, r2`` afecta a *flag* Z
+No programa (b) da :numref:`assign_bool`, a instrução ``cmp  r0, r2`` afeta a *flag* Z
 com o resultado da comparação de **x** com 20 -- valor 1 se forem iguais; valor 0 se forem diferentes.
 A instrução ``mrs  r1, cpsr`` copia o registo CPSR para R1.
 A aplicação da máscara 0000 0000 0000 0001 (linhas 5 e 6), garante em R1
@@ -892,7 +896,7 @@ Em geral nas linguagens de programação,
 a avaliação dos operandos da disjunção ou conjunção realiza-se da esquerda para a direita
 (ordem de leitura do texto).
 Nesta avaliação, assim que for encontrado um resultado igual ao elemento absorvente,
-as restantes sub-expressões já não serão avaliadas (*lazy avaluation*).
+as restantes sub-expressões já não serão avaliadas (*lazy evaluation*).
 A utilização deste critério visa a não realização de processamento desnecessário.
 Pelo conhecimento que o programador tiver dos dados,
 deve começar por escrever, em primeiro lugar,

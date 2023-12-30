@@ -106,7 +106,7 @@ Os argumentos de parâmetros dos tipos representados a 8 *bits*
 .. rubric :: Argumento a 32 *bits*
 
 Se o tipo do parâmetro for um valor codificado a 32 *bits*,
-o argumeno é colocado em dois registos consecutivos.
+o argumento é colocado em dois registos consecutivos.
 Cabendo ao registo de menor índice a parte de menor peso do argumento. ::
 
    void f(uint8_t a,   int32_t b,  int c);
@@ -162,7 +162,7 @@ o que é passado como argumento é o endereço da primeira posição do *array*.
                      r0               r1
 
 No programa da :numref:`function_arguments_3`, o primeiro argumento
-é o endereço da primera posição do *array*. Em *assembly* corresponde à *label* ``array:``.
+é o endereço da primeira posição do *array*. Em *assembly* corresponde à *label* ``array:``.
 É carregado em R0 com a instrução ``ldr r0, addressof_array``
 da forma convencional de carregamento de endereços de variáveis em registo
 -- :ref:`carregamento de endereco em registo`.
@@ -182,7 +182,7 @@ dividida pela dimensão de cada elemento do *array* -- ``lsr    r1, r1, #1``.
    |                                              |    :linenos:                          |
    |    int16_t array[] = {-20, 0, 10, -15};      |                                       |
    |                                              |        .data                          |
-   |    f(array, sizeof array / sizeof arra[0]);  |    array:                             |
+   |    f(array, sizeof array / sizeof array[0]); |    array:                             |
    |                                              |        .word    -20, 0, 10, -15       |
    |                                              |    array_end:                         |
    |                                              |                                       |
@@ -214,7 +214,7 @@ e em seguida empilhado no *stack* com a instrução ``push r0``.
 
 O argumento ``z`` sofre um processo semelhante,
 primeiro o seu conteúdo é carregado em R0 (linhas 17 a 20)
-e em seguinda é empilhado na posição seguinte do *stack*.
+e em seguida é empilhado na posição seguinte do *stack*.
 Note que este parâmetro (``int8_t e``) é de tipo representado a 8 *bits*,
 mas é passado com representação a 16 *bits*,
 tal como acontece com a passagem em registo.
@@ -312,7 +312,7 @@ que adiciona quatro unidades ao registo SP.
 
 
 O programa (b) da :numref:`function_arguments_5`
-mostra como aceder aos argumentos passados em *stak*,
+mostra como aceder aos argumentos passados em *stack*,
 utilizando a instrução **ldr** com base no registo SP (linhas 6 e 8).
 Este método dispensa a necessidade de desempilhar os argumentos (*pops*).
 
@@ -333,7 +333,7 @@ Utilização dos registos
 Uma função pode utilizar os registos de R0 a R3 sem preservar o seu conteúdo original.
 Os restantes registos -- de R4 a R12 e SP -- devem ser preservados.
 
-Na perspectiva de função chamadora, no regresso da invocação a outra função,
+Na perspetiva de função chamadora, no regresso da invocação a outra função,
 o conteúdo dos registos R0 a R3, LR e CPSR podem vir alterados;
 o conteúdo dos registos R4 a R12 e o SP não pode vir alterados.
 
@@ -354,7 +354,7 @@ Aplicação das convenções
 ------------------------
 
 A execução de um programa realiza uma sucessão de chamadas a funções
-que pode ser representada por um grafo na forma de àrvore.
+que pode ser representada por um grafo na forma de árvore.
 As últimas funções na cadeia de chamadas, as que não chamam outras funções,
 surgem representadas nos extremos do grafo, na posição das folhas da árvore,
 e são designadas por \"funções folha\". As restantes funções, as que chamam
@@ -421,7 +421,7 @@ como também, para serem utilizados em operações intermédias.
 A utilização de registos *callee saved* (R4 a R12), tanto para manter argumentos,
 como para suportar variáveis locais
 garante a manutenção destes dados durante o tempo de vida da função.
-Pela aplicação das convenções, as funções chamadas encarregam-se de prevervar
+Pela aplicação das convenções, as funções chamadas encarregam-se de preservar
 o conteúdo destes registos caso necessitem de os utilizar.
 
 .. literalinclude:: code/array_square/array_square.s
@@ -435,7 +435,7 @@ A função ``array_square`` apresentada na :numref:`array_square3`,
 é uma função não folha, pois invoca a função ``multiply``.
 Os argumentos ``result``, ``array`` e ``array_size``,
 assim como a variável local ``i``, constituem dados estáveis
-que devem ser matidos durante toda a execução da função.
+que devem ser mantidos durante toda a execução da função.
 Os registos R4, R5 e R6 são escolhidos para os argumentos e o registo R7 para a variável local.
 Estes registos foram os escolhidos porque, segundo a convenção -- :ref:`utilizacao dos registos` --
 a função ``multiply`` não os vai alterar, o que dispensa a função ``array_square``
@@ -448,7 +448,7 @@ de qualquer ação de preservação dos seus conteúdos.
    :linenos:
    :name: array_square4
 
-Nas linhas 7, 8 e 9, os conteúdo dos argumentos são tranferidos para os registos
+Nas linhas 7, 8 e 9, os conteúdo dos argumentos são transferidos para os registos
 onde vão permanecer durante toda a execução da função.
 Na linha 10 a variável ``i`` é inicializada com zero.
 
@@ -464,7 +464,7 @@ dos registos com dados estáveis. Essa solução seria pior porque no caso da ch
 ser repetida, como no caso da chamada a ``multiply``, essas instruções seriam executadas
 em todas as repetições.
 
-No P16 a instrução BL quarda o endereço de retorno no registo LR.
+No P16 a instrução BL guarda o endereço de retorno no registo LR.
 À entrada de uma função este registo contém o endereço de retorno dessa função.
 Se no seu interior for realizada a chamada a outra função como é o caso da
 chamada de ``bl multiply``, o registo LR vai receber novo endereço de retorno.
