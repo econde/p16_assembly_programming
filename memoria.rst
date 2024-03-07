@@ -6,22 +6,22 @@ Valores em memória
 Modelo da memória
 -----------------
 
-A arquitetura do P16 define um espaço de endereçamento de 64 Ki posições de memória.
+A arquitetura do P16 endereça ao espaço de memória com palavras de 16 *bits*,
+o que proporciona um alcance a :math:`2^{16}` (65536 ou 64 Ki) posições de memória.
 Cada posição de memória armazena uma palavra de oito *bits* -- um *byte*,
 sendo esta a unidade mínima de endereçamento.
 
-A :numref:`p16_memory_sapce_bit` representa o espaço de memória ao nível binário.
+A :numref:`p16_memory_space` representa o espaço de endereçamento.
 Do lado esquerdo os endereços das posições de memória, que vão de `0x0000` a `0xffff`.
-Do lado direito os conteúdos das posições de memória.
-Por exemplo, a posição de memória com endereço `0x0000` contém o *byte* de valor `0x56`
-e a posição de memória com endereço `0xfffd` contém o *byte* de valor `0x00`.
+No interior, os conteúdos das posições de memória.
+Por exemplo, a posição de memória com endereço `0xFFF9` contém o *byte* de valor `0xA7`.
 
-.. figure:: figures/p16_memory_space_bit.png
-   :name: p16_memory_sapce_bit
+.. figure:: figures/p16-memory-space.png
+   :name: p16_memory_space
    :align: center
    :scale: 25%
 
-   Representação do espaço e memória do P16 ao nível binário.
+   Representação do espaço de endereçamento do P16.
 
 O P16 é classificado como um processador de 16 *bits*,
 porque processa palavras formadas por 16 *bits* -- também designadas por *words*.
@@ -29,34 +29,13 @@ Armazenada em memória, uma *word* ocupa duas posições de memória consecutiva
 e diz-se alinhada se ocupar como primeira posição, no sentido crescente dos endereços,
 uma posição de endereço par -- o valor do *bit* de menor peso do endereço ser zero.
 
-A :numref:`little_endian` mostra o valor numérico 262 (0x0106),
-representado em binário, numa palavra de 16 *bits*, armazenada em memória.
-O *byte* de menor peso da palavra (0x06) ocupa a posição de memória de endereço 0x0024
-e o *byte* de maior peso da palavra (0x01) ocupa a posição de memória de endereço 0x0025.
+A :numref:`p16_memory_space` mostra o valor numérico 262 (0x0106),
+representado numa palavra de 16 *bits*, armazenada em memória.
+O *byte* de menor peso da palavra (0x06) ocupa a posição de memória de endereço 0xFFFC
+e o *byte* de maior peso da palavra (0x01) ocupa a posição de memória de endereço 0xFFD.
 O posicionamento em que a parte de menor peso da palavra ocupa um endereço menor
 e a parte de maior peso ocupa um endereço maior, designa-se por *little-endian*.
 
-.. figure:: figures/little_endian.png
-   :name: little_endian
-   :align: center
-   :scale: 25%
-
-   Representação em memória de uma palavra de 16 *bits*, alinhada,
-   com posicionamento *little-endian*
-
-A :numref:`big_endian` mostra uma representação equivalente à da :numref:`little_endian`,
-mas em que o *byte* de menor peso do valor ocupa a posição de memória de endereço 0x0025
-e o *byte* de maior peso ocupa a posição de endereço 0x0024.
-O posicionamento em que a parte de menor peso da palavra ocupa um endereço maior
-e a parte de maior peso ocupa um endereço menor, designa-se por "big-endian".
-
-.. figure:: figures/big_endian.png
-   :name: big_endian
-   :align: center
-   :scale: 25%
-
-   Representação em memória de uma palavra de 16 *bits*, alinhada,
-   com posicionamento *big-endian*
 
 .. _acesso a valores em memoria:
 
@@ -66,9 +45,9 @@ Acesso a valores em memória
 No P16, o acesso a valores em memória faz-se utilizando as instruções LDR e STR.
 A  instrução LDR copia dados da memória para os registos
 e a instrução STR copia dados dos registos para a memória.
-Os parâmetros destas instruções são um registo e uma posição de memória.
+Os parâmetros destas instruções são um registo e um endereço de memória.
 A especificação do endereço da posição de memória é feita através de registos
--- endereçamento indireto. Este modo de endereçamento consiste em utilizar
+-- designa-se por endereçamento indireto. Este modo de endereçamento consiste em utilizar
 o conteúdo de registos como endereço de memória. ::
 
    ldr    rd, [rn, ...]
@@ -81,12 +60,23 @@ Em ambas as instruções, o endereço da memória é definido pela expressão en
 com um segundo componente que pode ser um registo -- **[rn, rm]**
 ou uma constante -- **[rn, #constant]**.
 
-Num programa, antes da instrução LDR ou STR
-é necessário carregar o endereço da variável no registo **rn**.
+O endereçamento indireto em que o endereço é definido por duas componentes,
+designa-se por endereçamento indexado.
+A primeira componente tem o nome de base
+e a segunda componente tem o nome de índice.
+A base é sempre um registo -- **rn** --, o índice pode ser um registo -- **rm** --
+ou uma constante -- **#constant**.
 
-Para simplificar, vamos considerar nos exemplos desta secção,
-que se utiliza a variante com constante e que esta tem o valor zero
+Este esquema de endereçamento é adaptado ao acesso a valores em *array*,
+em que o registo base recebe o endereço inicial do *array*
+e a segunda componente é utilizada como índice do *array*
+(daí a designação de índice).
+
+Nos exemplos seguintes, vão ser realizados acessos a variáveis simples,
+basta utilizar a componente base.
+Vai ser considerada a variante de instrução com índice constante igual a zero -- **[rn, #0]**
 -- situação em que se pode usar a sintaxe **ldr  rd, [rn]** ou **str  rd, [rn]**.
+
 
 .. rubric :: Ler variável de 8 *bits*
 
@@ -173,7 +163,7 @@ Esta instrução é indiferente ao valor presente nos 8 *bits* mais significativ
    +---------------------+-------------------------+------------------------------+
    | .. code-block:: c   | .. code-block:: asm     | .. image:: figures/str.png   |
    |                     |                         |    :scale: 10%               |
-   |    uint16_t y;      |    ;r1 - address of x   |                              |
+   |    uint16_t y;      |    ;r1 - address of y   |                              |
    |                     |    mov   r0, 0xa4       |                              |
    |    y = 0x67a4       |    movt  r0, 0x67       |                              |
    |                     |    str   r0, [r1]       |                              |
@@ -225,8 +215,8 @@ define-se a posição a que se pretende aceder.
    +---------------------------------------------+-------------------------------+--------------------------------------+
    | .. code-block:: c                           | .. code-block:: asm           | .. image:: figures/array_bytes.png   |
    |                                             |                               |    :scale: 6%                        |
-   |    uint8_t array[] = {2, 0x23, 0x54, 0x10}; |    ; r0 = address of array    |                                      |
-   |    uint16_t a;                              |    ; r1 = i r2 = a            |                                      |
+   |    uint8_t array[] = {2, 0x23, 0x54, 0x10}; |    ; r0 - address of array    |                                      |
+   |    uint16_t a;                              |    ; r1 - i r2 - a            |                                      |
    |                                             |        mov   r1, #0           |                                      |
    |    for (uint16_t i = 0; i < 10; ++i)        |        mov   r4, #10          |                                      |
    |        a += array[i]                        |        b     for_cond         |                                      |
@@ -254,8 +244,8 @@ adicionando o índice i, em R1, ao endereço base do *array* em R0.
    +----------------------------------------------------+-------------------------------+--------------------------------------+
    | .. code-block:: c                                  | .. code-block:: asm           | .. image:: figures/array_words.png   |
    |                                                    |                               |    :scale: 5%                        |
-   |    int16_t array[] = {2, 0x5022, 0x56, 0x1011};    |    ; r0 = address of array    |                                      |
-   |    int16_t a;                                      |    ; r1 = i r2 = a            |                                      |
+   |    int16_t array[] = {2, 0x5022, 0x56, 0x1011};    |    ; r0 - address of array    |                                      |
+   |    int16_t a;                                      |    ; r1 - i r2 - a            |                                      |
    |                                                    |        mov   r1, #0           |                                      |
    |    for (uint16_t i = 0; i < 10; ++i)               |        mov   r4, #10          |                                      |
    |        a += array[i]                               |        b     for_cond         |                                      |

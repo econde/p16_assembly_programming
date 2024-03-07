@@ -18,8 +18,9 @@ P16 - Programação em *Assembly*
    :glob:
 
    introducao.rst
-   valores.rst
-   operacoes.rst
+   tipos.rst
+   numericos.rst
+   booleanos.rst
    controlo.rst
    memoria.rst
    funcao.rst

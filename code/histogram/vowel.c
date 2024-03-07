@@ -1,6 +1,7 @@
 #include <stdint.h>
 
-int16_t find_vowel(uint8_t letter) {
+int16_t find_vowel(char letter)
+{
 	switch (letter) {
 		case 'a':
 			return 0;
@@ -17,12 +18,12 @@ int16_t find_vowel(uint8_t letter) {
 	}
 }
 
-void histogram_vowel(uint8_t phrase[], uint16_t max_letters, uint16_t occurrences[5]) {
+void histogram_vowel(char phrase[], uint16_t max_letters, uint16_t occurrences[5])
+{
 	for (uint16_t i = 0; phrase[i] != '\0' && i < max_letters ; i++ ) {
-		int16_t idx;
-		if ( (idx = find_vowel(phrase[i]) ) != -1 ) {
-			occurrences[idx]++;
-		}
+		int16_t index = find_vowel(phrase[i]);
+		if (index != -1)
+			occurrences[index]++;
 	}
 }
 
@@ -34,12 +35,12 @@ uint16_t occurrences1[SIZE];
 uint16_t occurrences2[SIZE];
 uint16_t occurrences3[SIZE];
 
-uint8_t phrase1[] = "aaeaa eiee ioi oa u";
-uint8_t phrase2[] = "a ee iii oooo uuuuu";
-uint8_t phrase3[] = "aeiou";
+char phrase1[] = "aeiou";
+char phrase2[] = "a ee iii oooo uuuuu";
 
-int main() {
-	histogram_vowel(phrase1, ARRAY_SIZE(phrase1), occurrences1);
-	histogram_vowel(phrase2, ARRAY_SIZE(phrase1), occurrences2);
-	histogram_vowel(phrase3, ARRAY_SIZE(phrase1), occurrences3);
+int main()
+{
+	histogram_vowel(phrase1, 15, occurrences1);
+	histogram_vowel(phrase2, 19, occurrences2);
+	histogram_vowel("Hello world", 7, occurrences3);
 }

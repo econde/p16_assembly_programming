@@ -3,29 +3,49 @@
 	b	.
 
 _start:
-	ldr	sp, addressof_stack_top
-	mov	r0, pc
+	ldr	r0, addressof_bss_start	; inicializar secção bss com o valor zero
+	ldr	r1, addressof_bss_end
+	mov	r2, #0
+	b	_start_bss_zero_cond
+_start_bss_zero:
+	str	r2, [r0]
+	add	r0, r0, #2
+_start_bss_zero_cond:
+	cmp	r0, r1
+	blo	_start_bss_zero	
+
+	ldr	sp, addressof_stack_top	
+	
+	mov	r0, pc			; Invocar a função main sem limitação de alcance
 	add	lr, r0, #4
 	ldr	pc, addressof_main
 	b	.
 
 addressof_stack_top:
 	.word	stack_top
-
 addressof_main:
 	.word	main
+addressof_bss_start:
+	.word	bss_start
+addressof_bss_end:
+	.word	bss_end
 
 	.text
+	.rodata
 	.data
-
+	.bss
+bss_start:
+	.section .bss_end
+bss_end:
 	.section .stack
 	.equ	STACK_SIZE, 1024
-	.space	STACK_SIZE
+	.space	STACK_SIZE * 2
 stack_top:
 
 
 /*------------------------------------------------------------------------------
-int16_t find_vowel(uint8_t letter) {
+int16_t find_vowel(char letter)
+{
 	switch (letter) {
 		case 'a':
 			return 0;
@@ -80,11 +100,12 @@ default:
 	mov	pc, lr
 
 /*------------------------------------------------------------------------------
-void histogram_vowel(<r0> <r4> uint8_t phrase[], <r1> <r5> uint16_t max_letters,
-			<r2> <r6> uint16_t occurrences[5]) {
+void histogram_vowel(<r0> <r4> char phrase[], <r1> <r5> uint16_t max_letters,
+			<r2> <r6> uint16_t occurrences[5])
+{
 	for (<r7> uint16_t i = 0; phrase[i] != '\0' && i < max_letters ; i++ ) {
-		<r0> int16_t idx;
-		if ( (idx = find_vowel(phrase[i]) ) != -1 )
+		<r0> int16_t index = find_vowel(phrase[i];
+		if (index != -1)
 			occurrences[idx]++;
 	}
 }
@@ -105,7 +126,7 @@ for:
 	add	r1, r0, #1	; (if (... != -1) (-1 + 1 == 0)
 	bzs	if_end
 	add	r0, r0, r0	; occurrences[idx]++
-	ldr	r1, [r6, r0]	; idx * 2 = idx * sizeof(uint16_t)
+	ldr	r1, [r6, r0]	; index * 2 = index * sizeof(uint16_t)
 	add	r1, r1, #1
 	str	r1, [r6, r0]
 if_end:
@@ -132,14 +153,14 @@ uint16_t occurrences1[SIZE];
 uint16_t occurrences2[SIZE];
 uint16_t occurrences3[SIZE];
 
-uint8_t phrase1[] = "aaeaa eiee ioi oa u";
-uint8_t phrase2[] = "a ee iii oooo uuuuu";
-uint8_t phrase3[] = "aeiou";
+char phrase1[] = "aeiou";
+char phrase2[] = "a ee iii oooo uuuuu";
 
-int main() {
-	histogram_vowel(phrase1, ARRAY_SIZE(phrase1), occurrences1);
-	histogram_vowel(phrase2, ARRAY_SIZE(phrase1), occurrences2);
-	histogram_vowel(phrase3, ARRAY_SIZE(phrase1), occurrences3);
+int main()
+{
+	histogram_vowel(phrase1, 15, occurrences1);
+	histogram_vowel(phrase2, 19, occurrences2);
+	histogram_vowel("Hello world", 7, occurrences3);
 }
 */
 	.bss
@@ -154,36 +175,30 @@ occurrences3:
 
 	.data
 phrase1:
-	.asciz	"aaeaa eiee ioi oa u"
-phrase1_end:
+	.asciz	"aeiou"
 phrase2:
 	.asciz	"a ee iii oooo uuuuu"
-phrase2_end:
+
+	.rodata
 phrase3:
-	.asciz	"aeiou"
-phrase3_end:
+	.asciz	"Hello world"
 
 	.text
-
-	.equ	PHRASE1_SIZE, (phrase1_end - phrase1) / 2
-	.equ	PHRASE2_SIZE, (phrase2_end - phrase2) / 2
-	.equ	PHRASE3_SIZE, (phrase3_end - phrase3) / 2
-
 main:
 	push	lr
 
 	ldr	r0, addressof_phrase1
-	mov	r1, #PHRASE1_SIZE
+	mov	r1, #15
 	ldr	r2, addressof_occurrences1
 	bl	histogram_vowel
 
 	ldr	r0, addressof_phrase2
-	mov	r1, #PHRASE2_SIZE
+	mov	r1, #19
 	ldr	r2, addressof_occurrences2
 	bl	histogram_vowel
 
 	ldr	r0, addressof_phrase3
-	mov	r1, #PHRASE3_SIZE
+	mov	r1, #7
 	ldr	r2, addressof_occurrences3
 	bl	histogram_vowel
 
