@@ -3,20 +3,165 @@ Estrutura dos programas
 
 .. _estrutura de programa:
 
-Para sustentar a adequada versatilidade na utilização do espaço de endereçamento,
-um programa completo é organizado em secções.
-As secções mais comuns são: secção para código de inicialização -- **.startup**;
-secção para o *stack* -- **.stack**; secção para variáveis inicializadas -- **.data**;
-secção para variáveis não inicializadas (segundo a norma da linguagem C são inicializadas com zero) -- **.bss**;
-secção para constantes -- **.rodata**
-e secção para o código do programa -- **.text**.
+Para assegurar a adequada versatilidade na utilização do espaço de endereçamento,
+de acordo com as caraterísticas dos dispositivos de memória que o populam
+e as necessidades da aplicação,
+um programa é repartido por zonas de memória. Destacam-se três zonas:
+zona de código binário das instruções, zona de variáveis e zona de *stack*.
+Estas zonas de memória são designadas na literatura inglesa por *segment* ou *section*.
+Aqui vais ser utilizado o termo "secção".
+
+Vão ser definidos dois modelos de organização dos programas em secções:
+um modelo mínimo e um modelo compatível com a linguagem C.
+
+Modelo de organização mínimo
+----------------------------
+
+Neste modelo definem-se três secções:
+   * **.text** -- para o código binário das instruções e dados constantes;
+   * **.data** -- para as variáveis que são modificadas durante a execução do programa;
+   * **.stack** -- para suporte da execução estruturada com base em rotinas (funções).
+
+.. figure:: figures/section_map_min.png
+   :name: section_map_min
+   :align: center
+   :scale: 12%
+
+   Organização do programa em três secções
+
+.data
+.....
+
+As variáveis são alojadas na secção **.data**.
+
++----------------------------------------------------------+--------------------------------------------------------+
+| .. literalinclude:: code/multiply_add_add/multiply.s     | .. literalinclude:: code/multiply_add_add/multiply.s   |
+|    :language: c                                          |    :language: asm                                      |
+|    :lines: 95-97                                         |    :lines: 90,100-107                                  |
++----------------------------------------------------------+--------------------------------------------------------+
+
+.text
+.....
+
+O código binário das instruções do programa, assim com dados auxiliares ao código,
+são alojados na secção **.text**.
+
++----------------------------------------------------------+--------------------------------------------------------+
+| .. literalinclude:: code/multiply_add_add/multiply.s     | .. literalinclude:: code/multiply_add_add/multiply.s   |
+|    :language: c                                          |    :language: asm                                      |
+|    :lines: 23-26                                         |    :lines: 29,33-49                                    |
++----------------------------------------------------------+--------------------------------------------------------+
+
+.stack
+......
+
+A secção **.stack** é uma zona de memória para salvaguarda de dados temporários,
+necessários à execução do programa.
+O conteúdo inicial desta zona de memória é indiferente.
+
+A diretiva ``.space`` na linha 33 da :numref:`map_min`
+reserva a área de memória cuja dimensão pode ser ajustada através do
+símbolo ``STACK_MAX_SIZE``.
+
+Preparação
+..........
+
+O código do programa é organizado em funções. A primeira função a ser chamada
+é a função **main** e todo o processamento útil é desencadeado a partir dela.
+
+Após a ação reset, o P16 passa a executar código a partir do endereço 0x0000.
+Neste endereço é localizado código que realiza
+as necessárias preparações antes de invocar a função **main**
+-- linha 11 da :numref:`map_min`.
+
+Neste modelo mínimo de execução,
+a preparação consiste apenas em inicializar o registo SP
+com o endereço de topo da secção ``.stack`` --
+linhas 10, 14 e 15 da :numref:`map_min`.
+
+Localização
+...........
+
+A dimensão e a localização das secções no espaço de endereçamento
+designa-se por mapa de memória.
+As secções são localizadas pela ordem com que são escritas no ficheiro fonte do programa.
+O endereço da secção seguinte é o endereço par imediatamente disponível
+depois do fim da secção anterior.
+A dimensão de cada secção depende do número de instruções
+e do número de variáveis e respetivos tipos, definidos no seu interior.
+
+.. literalinclude:: code/multiply_add_add/multiply.s
+   :language: c
+   :caption: Estrutura de código padrão para o modelo de organizaçãp mínimo
+   :linenos:
+   :name: map_min
+   :lines: 1-16, 29-32, 87-93, 109-116
+
+O código completo do programa utilizado como exemplo nesta secção pode ser descarregado daqui:
+:download:`multiply.s<code/multiply_add_add/multiply.s>`.
+
+O comando ::
+
+   $ p16as multiply.s
+
+gera os ficheiros multiply.hex e multiply.lst.
+
+O mapa de memória do programa, que faz parte do ficheiro
+:download:`multiply.lst<code/multiply_add_add/multiply.lst>`,
+pode ser visualizado nas linhas 5 a 7 da
+:numref:`multiply_lst`.
+
+A secção **.text** começa no endereço 0x0000 por ser a que aparece em primeiro lugar
+no ficheiro fonte do programa.
+
+O endereço da secção **.data** é posterior à secção **.text** porque aparece em segundo lugar.
+O seu endereço inicial é 0x0044 porque é essa a dimensão da secção anterior.
+
+.. literalinclude:: code/multiply_add_add/multiply.lst
+   :language: c
+   :caption: Mapa de memória
+   :linenos:
+   :name: multiply_lst
+   :lines: 1-8
+
+As instruções ``b  _start`` e ``b  .`` que aparem no início da secção **.text**
+são localizadas respetivamente nos endereços 0x0000 e 0x0002.
+Estes endereços são fixados pela arquitetura P16, como os pontos de entrada em execução
+dos acontecimentos *reset* e interrupção, respetivamente.
+Razão pela qual o código de preparação não é localizado exatamente no endereço 0x0000.
+
+A instrução ``b  .`` no endereço 0x0002 é apenas figurativa.
+Este programa não está capacitado para realizar processamento de interrupções.
+
+Modelo compatível com a linguagem C
+-----------------------------------
+
+Num modelo de organização mais elaborado como o da linguagem C,
+há a destacar a separação das variáveis por três secções:
+   * **.data** -- secção para variáveis inicializadas;
+   * **.bss** -- secção para variáveis não inicializadas (`Wikipedia <https://en.wikipedia.org/wiki/.bss>`_);
+   * **.rodata** -- secção para constantes.
+
+A razão para a criação da secção **.rodata** é esta poder ser alojada
+em memória de apenas leitura (ROM).
+
+A razão para a criação da secção **.bss** para as variáveis não inicializadas
+é a redução da memória necessária para o armazenamento do programa.
+
+Segundo a norma da linguagem C,
+o código de inicialização preenche a secção **.bss**
+com o valor zero, antes de invocar a função principal (**main**).
+
+No que respeita ao código binário, é feita uma separação do código de preparação
+-- secção **.startup** -- do código específico da aplicação -- secção **.text**.
+Esta separação torna independentes as localizações destas duas categorias de código.
 
 .. figure:: figures/program.png
    :name: program
    :align: center
    :scale: 12%
 
-   Composição de um programa por secções
+   Composição de um programa por secções, compatível com a linguagem C
 
 
 Em computadores de uso genérico, em que o espaço de endereçamento é preenchido,
@@ -27,14 +172,12 @@ e por fim o *stack*.
 
 Em computadores de uso específico (sistemas embebidos) o espaço de memória
 comporta normalmente uma zona de memória não volátil, de apenas leitura,
-onde são localizados o código e as constantes -- secções **.startup**, **.text** e **.rodata** --,
+onde são localizados o código, as constantes e os valores iniciais das variáveis
+-- secções **.startup**, **.text**, **.rodata** e cópia da **.data** --,
 e uma zona de memória volátil, de leitura e escrita,
 onde são localizadas as variáveis -- secções **.data**, **.bss** e **.stack**.
 
-Secções
--------
-
-As variáveis globais globais -- as que são definidas externamente às funções --,
+Na linguagem C as variáveis globais -- as que são definidas externamente às funções --,
 como a variável **a** na linha 1
 ou as variáveis locais estáticas, como a variável **b** na linha 4,
 da :numref:`var_global_static_local`,
@@ -74,6 +217,7 @@ Na secção **.data** são alojadas as variáveis com valores iniciais diferente
 |    uint16_t bitmap[] = {                           |   bitmap:                                                |
 |            0xA008, 0x0450, 0x7888, 0x4554, 0x9900  |           .word   0xA008, 0x0450, 0x7888, 0x4554, 0x9900 |
 |    };                                              |                                                          |
+|                                                    |                                                          |
 |    uint32_t bigger = {0x7FFF3355};                 |   bigger:                                                |
 |                                                    |           .word   0x3355, 0x7FFF                         |
 +----------------------------------------------------+----------------------------------------------------------+
@@ -124,62 +268,6 @@ As constantes são alojadas na secção **.rodata**.
 |                                     |           .asciz  "String literal\n"  |
 +-------------------------------------+---------------------------------------+
 
-.text
-.....
-
-O código binário das instruções do programa assim com dados auxiliares ao código
-são alojados na secção **.text**.
-
-+---------------------------+------------------------------------+
-| .. code-block:: c         | .. code-block:: asm                |
-|                           |                                    |
-|   int a = 3, b = 4, c;    |           .data                    |
-|                           |   a:                               |
-|   int main()              |           .word   3                |
-|   {                       |   b:                               |
-|           c = a + b;      |           .word   4                |
-|   }                       |                                    |
-|                           |           .bss                     |
-|                           |   c:                               |
-|                           |           .byte   0                |
-|                           |                                    |
-|                           |           .text                    |
-|                           |   main:                            |
-|                           |           ldr     r0, addressof_a  |
-|                           |           ldr     r1, addressof_b  |
-|                           |           ldr     r2, addressof_c  |
-|                           |           ldr     r0, [r0]         |
-|                           |           ldr     r1, [r1]         |
-|                           |           add     r0, r0, r1       |
-|                           |           str     r0, [r2]         |
-|                           |           mov     pc, lr           |
-|                           |                                    |
-|                           |   addressof_a:                     |
-|                           |           .word   a                |
-|                           |   addressof_b:                     |
-|                           |           .word   b                |
-|                           |   addressof_c:                     |
-|                           |           .word   c                |
-+---------------------------+------------------------------------+
-
-.stack
-......
-
-A secção **.stack** é uma zona de memória para salvaguarda de dados temporários,
-necessários à execução do programa.
-
-.. code-block:: asm
-   :name: stack_section
-   :caption: Reserva de memória para *stack*
-
-           .stack
-           .equ    STACK_MAX_SIZE, 1024
-           .space  STACK_MAX_SIZE * 2
-   stack_top:
-
-Na :numref:`stack_section` exemplifica-se a reserva da memória para suporte à secção **.stack**.
-O conteúdo inicial desta zona de memória é indiferente.
-
 .startup
 ........
 
@@ -204,49 +292,17 @@ for esta a primeira secção do ficheiro fonte).
 As restantes secções podem ser localizadas em qualquer endereço do espaço de endereçamento.
 
 O programa da :numref:`startup_code` apresenta-se como um exemplo de código de arranque
-que prepara um ambiente de execução estruturado para o SDP16.
+que prepara um ambiente de execução estruturado para o SDP16, compatível com linguagem C.
 Este estabelece a existência e a posição das secções como descritas na :numref:`program`,
 inicializa o registo SP com endereço de topo da secção **.stack**
 e realiza uma chamada com ligação à função **main**.
 
-.. code-block:: asm
-   :linenos:
+.. literalinclude:: code/histogram/vowel.s
+   :language: asm
    :caption: Código de arranque
+   :linenos:
    :name: startup_code
-
-   	.section .startup
-   	b	_start
-   	b	.
-
-   _start:
-   	ldr	sp, addressof_stack_top
-   	mov	r0, pc
-   	add	lr, r0, #4
-   	ldr	pc, addressof_main
-   	b	.
-
-   addressof_stack_top:
-   	.word	stack_top
-
-   addressof_main:
-   	.word	main
-
-   	.text
-   	.rodata
-   	.data
-   	.bss
-
-   	.stack
-   	.equ	STACK_MAX_SIZE, 1024
-   	.space	STACK_MAX_SIZE * 2
-   stack_top:
-
-   ;------------------------------
-
-   	.text
-   main:
-   	; ... código da função main
-   	mov	pc, lr
+   :lines: 1-5, 17-27, 32-36, 40-44
 
 Como o endereço 0x0002 é reservado ao atendimento de interrupções,
 a primeira instrução a executar, localizada no endereço 0x0000,
@@ -276,7 +332,6 @@ As definições que aparecem nas linhas 1, 18, 19, 20, 21 e 23,
 definem a existência das secções
 **.startup**, **.text** e **.rodata**, **.data**, **.bss** e **.stack**,
 assim como a sua localização relativa no espaço de endereçamento.
-
 A definição do conteúdo das secções pode
 ser escrita em qualquer lugar do restante programa.
 Basta repetir a diretiva de secção.
@@ -284,7 +339,7 @@ Basta repetir a diretiva de secção.
 
 A localização das secções pode ser definida explicitamente
 através de opções de invocação do p16as
-(`ver aqui <https://p16-assembler.readthedocs.io/pt/latest/pas_utilizacao.html#localizacao-das-seccoes>`_).
+(`ver aqui <https://p16-assembler.readthedocs.io/pt/latest/pas_utilizacao.html#seccoes>`_).
 
 Nas linhas 7 a 9 encontra-se uma sequência de instruções
 que realiza um salto com ligação para a função ``main``,
@@ -308,10 +363,10 @@ A sequência ::
 
    mov   r0, pc
    add   lr, r0, #4
-   ldr   pc, addressof_main
+   ldr   pc, main_addr
 
 supera a limitação de alcance, ao carregar diretamente no PC
-o endereço da função ``main`` -- ``ldr   pc, addressof_main``.
+o endereço da função ``main`` -- ``ldr   pc, main_addr``.
 As duas instruções anteriores servem para carregar em LR
 o endereço de retorno.
 A instrução ``mov   r0, pc`` coloca em R0 o valor atual de PC,
@@ -322,8 +377,7 @@ coloca em LR o endereço da instrução que se encontrar a seguir a LDR.
 Inicialização da secção **.bss**
 --------------------------------
 
-A secção **.bss** destina-se a alojar variáveis sem valor inicial explícito
-(`Wikipedia <https://en.wikipedia.org/wiki/.bss>`_).
+A secção **.bss** destina-se a alojar variáveis sem valor inicial explícito.
 A justificação para a exitência de uma secção separada da secção **.data**,
 onde são alojadas as variáveis com valor inicial explícito,
 é a não necessidade de ocupar espaço no ficheiro objeto
@@ -335,7 +389,7 @@ são alojadas na secção **.bss** e inicializadas a zero.
 Faz parte da preparação do ambiente de execução compatível com a linguagem C,
 a inicialização a zero da àrea de memória atribuida à secção **.bss**.
 
-Na :numref:`cstart_code` apresenta-se um módulo de arranque para o PDS16
+Na :numref:`startup_code` apresenta-se um módulo de arranque para o PDS16
 em o código das linhas 6 a 15 é responsável por esta operação.
 
 Este código baseia-se nas *labels* ``bss_start`` e ``bss_end``.
@@ -353,59 +407,12 @@ até ao endereço de ``bss_end``, presente em R1.
 Estes endereços são pares porque correspondem a endereços de início de secção,
 que por definição, são sempre pares.
 
-.. code-block:: asm
-   :linenos:
+.. literalinclude:: code/histogram/vowel.s
+   :language: asm
    :caption: Código de arranque com inicialização de **.bss**
-   :name: cstart_code
+   :linenos:
+   :name: startup_code_bss
+   :lines: 1-44
 
-   	.section .startup
-   	b	_start
-   	b	.
-
-   _start:
-   	ldr	r0, addressof_bss_start
-   	ldr	r1, addressof_bss_end
-   	mov	r2, #0
-   	b	_start_bss_zero_cond
-   _start_bss_zero:
-   	str	r2, [r0]
-   	add	r0, r0, #2
-   _start_bss_zero_cond:
-   	cmp	r0, r1
-   	blo	_start_bss_zero
-
-   	ldr	sp, addressof_stack_top
-
-   	mov	r0, pc
-   	add	lr, r0, #4
-   	ldr	pc, addressof_main
-   	b	.
-
-   addressof_stack_top:
-   	.word	stack_top
-   addressof_main:
-   	.word	main
-   addressof_bss_start:
-   	.word	bss_start
-   addressof_bss_end:
-   	.word	bss_end
-
-	.text
-	.rodata
-	.data
-	.bss
-   bss_start:
-	.section .bss_end
-   bss_end:
-	.section .stack
-	.equ	STACK_SIZE, 1024
-	.space	STACK_SIZE * 2
-   stack_top:
-
-   ;------------------------------
-
-   	.text
-   main:
-   	; ... código da função main
-   	mov	pc, lr
-
+O código completo do programa utilizado como exemplo nesta secção pode ser descarregado daqui:
+:download:`vowel.s<code/histogram/vowel.s>`.
