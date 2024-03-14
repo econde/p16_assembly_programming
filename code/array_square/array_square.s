@@ -3,16 +3,16 @@
    	b	.
 
    _start:
-   	ldr	sp, addressof_stack_top
+   	ldr	sp, stack_top_addr
    	mov	r0, pc
    	add	lr, r0, #4
-   	ldr	pc, addressof_main
+   	ldr	pc, main_addr
    	b	.
 
-   addressof_stack_top:
+   stack_top_addr:
    	.word	stack_top
 
-   addressof_main:
+   main_addr:
    	.word	main
 
    	.text
@@ -47,15 +47,15 @@ int main() {
 main:
 	push	lr
 
-	ldr	r0, addressof_result
-	ldr	r1, addressof_array
+	ldr	r0, result_addr
+	ldr	r1, array_addr
 	mov	r2, #4
 	bl	array_square
 	pop	pc
 
-addressof_result:
+result_addr:
 	.word	result
-addressof_array:
+array_addr:
 	.word	array
 
 /* ---------------------------------------------------------------------

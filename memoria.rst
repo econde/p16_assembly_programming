@@ -317,12 +317,12 @@ voltar a escrever esse registo na variável em memória.
    |    x++;                          |        .byte  0x55                  |
    |                                  |                                     |
    |                                  |        .text                        |
-   |                                  |        ldr    r1, addressof_x       |
+   |                                  |        ldr    r1, x_addr            |
    |                                  |        ldrb   r0, [r1]              |
    |                                  |        add    r0, r0, #1            |
    |                                  |        strb   r0, [r1]              |
    |                                  |                                     |
-   |                                  |    addressof_x:                     |
+   |                                  |    x_addr:                          |
    |                                  |        .word  x                     |
    +----------------------------------+-------------------------------------+
 
@@ -349,8 +349,8 @@ Esta instrução copia um valor expresso a 16 *bits*,
 armazenado em memória, no endereço definido por *label*,
 para o registo **rd**.
 
-A instrução ``ldr  r1, addressof_x`` carrega em R1 a palavra de 16 *bits*
-alojada em memória na posição assinalada pela *label* ``addressof_x:``.
+A instrução ``ldr  r1, x_addr`` carrega em R1 a palavra de 16 *bits*
+alojada em memória na posição assinalada pela *label* ``x_addr:``.
 Esse conteúdo é o endereço da variável **x**, definido pela diretiva ``.word x``,
 que reserva duas posições de memória inicializadas com o valor da *label* **x**.
 
@@ -370,13 +370,13 @@ no sentido crescente dos endereços.
 
    Carregamento em registo do endereço de uma variável
 
-A instrução ``ldr  r1, addressof_x`` carrega 0x6037 em R1 (endereço da variável **x**).
-Este valor está armazenado em memória no endereço 0x4022 (posição indicada por ``addressof_x:``).
+A instrução ``ldr  r1, x_addr`` carrega 0x6037 em R1 (endereço da variável **x**).
+Este valor está armazenado em memória no endereço 0x4022 (posição indicada por ``x_addr:``).
 Esta instrução determina o valor 0x4022 adicionando ao valor atual do PC (0x400a)
 o dobro do campo **imm6** (0xb) (0x4022 = 0x400a + 0x0b * 2).
 Na fase de codificação binária do programa, o valor **imm6** é calculado como
-metade da diferença entre o endereço de ``addressof_x`` e o valor atual do PC ((0x4022 – 0x400a) / 2).
+metade da diferença entre o endereço de ``x_addr`` e o valor atual do PC ((0x4022 – 0x400a) / 2).
 Na fase de execução de uma instrução, o PC contém o endereço da instrução seguinte.
-A instrução ``ldr  r1, addressof_x`` ocupa o endereço 0x4008 mas na altura
+A instrução ``ldr  r1, x_addr`` ocupa o endereço 0x4008 mas na altura
 em que está a ser executada o valor do PC é 0x400a.
 

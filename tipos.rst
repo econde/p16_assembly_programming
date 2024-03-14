@@ -4,11 +4,11 @@ Tipos de dados
 Na programação em *assembly* do P16,
 tendo como referência a linguagem C,
 considera-se que os tipos básicos são representados com as dimensões em *bits*
-indicadas na :numref:`tipos_dimensoes`.
+indicadas na :numref:`tipos-dimensoes`.
 
 .. table:: Dimensões dos tipos básicos da linguagem C na arquitetura P16
    :align: center
-   :name: tipos_dimensoes
+   :name: tipos-dimensoes
 
    +----------+--------------------+
    | Tipo     | Dimensão (*bits*)  |
@@ -33,11 +33,12 @@ podem ser alojados em qualquer posição da memória.
 
 Os valores de tipos representados com palavras de dois *bytes*,
 ocupam duas posições de memória contíguas.
+
 A posição de memória de endereço mais baixo deve ser par -- designa-se alinhamento par.
 Na referenciação por endereço de uma palavra de múltiplos *bytes*, utiliza-se
 o endereço menor.
 
-Na :numref:`memory_types` a palavra que suporta a representação da variável **h**,
+Por exemplo, na :numref:`memory_types` a palavra que suporta a representação da variável **h**,
 ocupa duas posições de memória, possui alinhamento par e o seu endereço é **0x0006**.
 
 .. figure:: figures/memory_types.png

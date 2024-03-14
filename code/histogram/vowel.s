@@ -3,8 +3,8 @@
 	b	.
 
 _start:
-	ldr	r0, addressof_bss_start	; inicializar secção bss com o valor zero
-	ldr	r1, addressof_bss_end
+	ldr	r0, bss_start_addr	; Preencher a secção bss com o zero
+	ldr	r1, bss_end_addr
 	mov	r2, #0
 	b	_start_bss_zero_cond
 _start_bss_zero:
@@ -12,22 +12,22 @@ _start_bss_zero:
 	add	r0, r0, #2
 _start_bss_zero_cond:
 	cmp	r0, r1
-	blo	_start_bss_zero	
+	blo	_start_bss_zero
 
-	ldr	sp, addressof_stack_top	
-	
+	ldr	sp, stack_top_addr	; Inicializar SP no topo do stack
+
 	mov	r0, pc			; Invocar a função main sem limitação de alcance
 	add	lr, r0, #4
-	ldr	pc, addressof_main
+	ldr	pc, main_addr
 	b	.
 
-addressof_stack_top:
+stack_top_addr:
 	.word	stack_top
-addressof_main:
+main_addr:
 	.word	main
-addressof_bss_start:
+bss_start_addr:
 	.word	bss_start
-addressof_bss_end:
+bss_end_addr:
 	.word	bss_end
 
 	.text
@@ -37,9 +37,10 @@ addressof_bss_end:
 bss_start:
 	.section .bss_end
 bss_end:
-	.section .stack
-	.equ	STACK_SIZE, 1024
-	.space	STACK_SIZE * 2
+
+	.stack
+	.equ	STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
 stack_top:
 
 
@@ -132,7 +133,7 @@ for:
 if_end:
 	add	r7, r7, #1
 for_cond:
-	ldrb	r0, [r4, r7]	; for(...; phrase[i] != '\0' 
+	ldrb	r0, [r4, r7]	; for(...; phrase[i] != '\0'
 	sub	r0, r0, #0
 	beq	for_end
 	cmp	r7, r5		; && i < max_letters; ...)
@@ -146,8 +147,6 @@ for_end:
 /*------------------------------------------------------------------------------
 
 #define SIZE 5
-
-#define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
 
 uint16_t occurrences1[SIZE];
 uint16_t occurrences2[SIZE];
@@ -187,33 +186,33 @@ phrase3:
 main:
 	push	lr
 
-	ldr	r0, addressof_phrase1
+	ldr	r0, phrase1_addr
 	mov	r1, #15
-	ldr	r2, addressof_occurrences1
+	ldr	r2, occurrences1_addr
 	bl	histogram_vowel
 
-	ldr	r0, addressof_phrase2
+	ldr	r0, phrase2_addr
 	mov	r1, #19
-	ldr	r2, addressof_occurrences2
+	ldr	r2, occurrences2_addr
 	bl	histogram_vowel
 
-	ldr	r0, addressof_phrase3
+	ldr	r0, phrase3_addr
 	mov	r1, #7
-	ldr	r2, addressof_occurrences3
+	ldr	r2, occurrences3_addr
 	bl	histogram_vowel
 
 	pop	pc
 
-addressof_phrase1:
+phrase1_addr:
 	.word	phrase1
-addressof_phrase2:
+phrase2_addr:
 	.word	phrase2
-addressof_phrase3:
+phrase3_addr:
 	.word	phrase3
 
-addressof_occurrences1:
+occurrences1_addr:
 	.word	occurrences1
-addressof_occurrences2:
+occurrences2_addr:
 	.word	occurrences2
-addressof_occurrences3:
+occurrences3_addr:
 	.word	occurrences3

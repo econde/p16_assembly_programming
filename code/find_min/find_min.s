@@ -3,16 +3,16 @@
 	b	.
 
 _start:
-	ldr	sp, addressof_stack_top
+	ldr	sp, stack_top_addr
 	mov	r0, pc
 	add	lr, r0, #4
-	ldr	pc, addressof_main
+	ldr	pc, main_addr
 	b	.
 
-addressof_stack_top:
+stack_top_addr:
 	.word	stack_top
 
-addressof_main:
+main_addr:
 	.word	main
 
 	.text
@@ -51,27 +51,27 @@ q:
 main:
 	push	lr
 
-	ldr	r0, addressof_table1
+	ldr	r0, table1_addr
 	mov	r1, #(table1_end - table1) / 2
 	bl	find_min
-	ldr	r1, addressof_p
+	ldr	r1, p_addr
 	str	r0, [r1]
 
-	ldr	r0, addressof_table2
+	ldr	r0, table2_addr
 	mov	r1, #(table2_end - table2) / 2
 	bl	find_min
-	ldr	r1, addressof_q
+	ldr	r1, q_addr
 	str	r0, [r1]
 
 	pop	pc
 
-addressof_table1:
+table1_addr:
 	.word	table1
-addressof_table2:
+table2_addr:
 	.word	table2
-addressof_p:
+p_addr:
 	.word	p
-addressof_q:
+q_addr:
 	.word	q
 
 /*---------------------------------------------------------

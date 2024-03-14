@@ -85,9 +85,9 @@ Os argumentos de parâmetros dos tipos representados a 8 *bits*
    |                                              |        .byte    -4            |
    |                                              |                               |
    |                                              |        .text                  |
-   |                                              |        ldr    r0, addressof_x |
+   |                                              |        ldr    r0, x_addr      |
    |                                              |        ldr    r0, [r0]        |
-   |                                              |        ldr    r1, addressof_y |
+   |                                              |        ldr    r1, y_addr      |
    |                                              |        ldrb   r1, [r1]        |
    |                                              |        lsl    r1, r1, #8      |
    |                                              |        asr    r1, r1, #8      |
@@ -95,9 +95,9 @@ Os argumentos de parâmetros dos tipos representados a 8 *bits*
    |                                              |        mov    r3, #'a'        |
    |                                              |        bl     f               |
    |                                              |                               |
-   |                                              |    addressof_x:               |
+   |                                              |    x_addr:                    |
    |                                              |       .word   x               |
-   |                                              |    addressof_y:               |
+   |                                              |    y_addr:                    |
    |                                              |       .word   y               |
    |                                              |                               |
    | \(a\)                                        | \(b\)                         |
@@ -113,9 +113,10 @@ Cabendo ao registo de menor índice a parte de menor peso do argumento. ::
                  r0        r2:r1      r3
 
 No programa (b) da :numref:`function_arguments_2`,
-a variável ``x`` é definida com duas diretivas ``.word`` (linha 3),
-a de endereço menor (a primeira no sentido da escrita) com a parte de menor peso
-e a seguinte com a parte de maior peso.
+a variável ``x`` é definida na linha 3 com a diretiva ``.word``.
+Os dois argumentos têm o efeito de reservar espaço para duas *words* em memória.
+A *word* de endereço menor (a primeira no sentido da escrita) recebe a parte de menor peso
+e a seguinte recebe a parte de maior peso.
 Como o número é negativo a parte de maior peso tem todos os *bits* a 1,
 por isso se utilizou a expressão ``~0`` para a inicializar.
 
@@ -137,16 +138,16 @@ por isso se utilizou a expressão ``~0`` para a inicializar.
    |                                              |        .text                  |
    |                                              |        mov    r0, #-4         |
    |                                              |        movt   r0, #~0         |
-   |                                              |        ldr    r2, addressof_x |
+   |                                              |        ldr    r2, x_addr      |
    |                                              |        ldr    r1, [r2, #0]    |
    |                                              |        ldr    r2, [r2, #2]    |
-   |                                              |        ldr    r3, addressof_y |
+   |                                              |        ldr    r3, y_addr      |
    |                                              |        ldrb   r3, [r3]        |
    |                                              |        bl     f               |
    |                                              |                               |
-   |                                              |    addressof_x:               |
+   |                                              |    x_addr:                    |
    |                                              |       .word   x               |
-   |                                              |    addressof_y:               |
+   |                                              |    y_addr:                    |
    |                                              |       .word   y               |
    |                                              |                               |
    | \(a\)                                        | \(b\)                         |
@@ -163,7 +164,7 @@ o que é passado como argumento é o endereço da primeira posição do *array*.
 
 No programa da :numref:`function_arguments_3`, o primeiro argumento
 é o endereço da primeira posição do *array*. Em *assembly* corresponde à *label* ``array:``.
-É carregado em R0 com a instrução ``ldr r0, addressof_array``
+É carregado em R0 com a instrução ``ldr r0, array_addr``
 da forma convencional de carregamento de endereços de variáveis em registo
 -- :ref:`carregamento de endereco em registo`.
 
@@ -187,12 +188,12 @@ dividida pela dimensão de cada elemento do *array* -- ``lsr    r1, r1, #1``.
    |                                              |    array_end:                         |
    |                                              |                                       |
    |                                              |        .text                          |
-   |                                              |        ldr    r0, addressof_array     |
+   |                                              |        ldr    r0, array_addr          |
    |                                              |        mov    r1, #array_end - array  |
    |                                              |        lsr    r1, r1, #1              |
    |                                              |        bl     f                       |
    |                                              |                                       |
-   |                                              |    addressof_array:                   |
+   |                                              |    array_addr:                        |
    |                                              |        .word   array                  |
    |                                              |                                       |
    | \(a\)                                        | \(b\)                                 |
@@ -246,32 +247,32 @@ Os restantes argumentos são passados nos registos R0 a R3 da forma convencional
    |                                              |        mov    r0, #-3                 |
    |                                              |        movt   r0, #~0                 |
    |                                              |        push   r0                      |
-   |                                              |        ldr    r0, addressof_z         |
+   |                                              |        ldr    r0, z_addr              |
    |                                              |        ldr    r0, [r0]                |
    |                                              |        lsl    r0, r0, #8              |
    |                                              |        asr    r0, r0, #8              |
    |                                              |        push   r0                      |
-   |                                              |        ldr    r0, addressof_x         |
+   |                                              |        ldr    r0, x_addr              |
    |                                              |        ldrb   r0, [r0]                |
    |                                              |        lsl    r0, r0, #8              |
    |                                              |        asr    r0, r0, #8              |
-   |                                              |        ldr    r1, addressof_y         |
+   |                                              |        ldr    r1, y_addr              |
    |                                              |        ldr    r1, [r1]                |
    |                                              |        mov    r2, #2                  |
    |                                              |        mov    r3, #3                  |
    |                                              |        bl     sum                     |
    |                                              |        mov    r1, #4                  |
    |                                              |        add    sp, r1, sp              |
-   |                                              |        ldr    r1, addressof_w         |
+   |                                              |        ldr    r1, w_addr              |
    |                                              |        str    r0, [r1]                |
    |                                              |                                       |
-   |                                              |    addressof_x:                       |
+   |                                              |    x_addr:                            |
    |                                              |        .word  x                       |
-   |                                              |    addressof_y:                       |
+   |                                              |    y_addr:                            |
    |                                              |        .word  y                       |
-   |                                              |    addressof_z:                       |
+   |                                              |    z_addr:                            |
    |                                              |        .word  z                       |
-   |                                              |    addressof_w:                       |
+   |                                              |    w_addr:                            |
    |                                              |        .word  w                       |
    |                                              |                                       |
    | \(a\)                                        | \(b\)                                 |

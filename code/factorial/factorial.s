@@ -3,16 +3,16 @@
 	b	.
 
 _start:
-	ldr	sp, addressof_stack_top
+	ldr	sp, stack_top_addr
 	mov	r0, pc
 	add	lr, r0, #4
-	ldr	pc, addressof_main
+	ldr	pc, main_addr
 	b	.
 
-addressof_stack_top:
+stack_top_addr:
 	.word	stack_top
 
-addressof_main:
+main_addr:
 	.word	main
 
 	.text
@@ -46,24 +46,24 @@ fb:
 main:
 	push	lr
 
-	ldr	r0, addressof_a
+	ldr	r0, a_addr
 	ldr	r0, [r0]
 	bl	factorial
-	ldr	r2, addressof_fa
+	ldr	r2, fa_addr
 	str	r0, [r2]
 
 	mov	r0, #9
 	bl	factorial
-	ldr	r2, addressof_fb
+	ldr	r2, fb_addr
 	str	r0, [r2]
 
 	pop	pc
 
-addressof_a:
+a_addr:
 	.word	a
-addressof_fa:
+fa_addr:
 	.word	fa
-addressof_fb:
+fb_addr:
 	.word	fa
 
 /*------------------------------------------------------------
@@ -92,7 +92,7 @@ factorial:
 	add	r1, r1, #0	; tmp > UINT16_MAX ?
 	bzs	return_tmp
 	mov	r0, #UINT16_MAX & 0xff
-	movt	r0, #(UINT16_MAX >> 8) & 0xff
+	movt	r0, #UINT16_MAX >> 8
 return_tmp:
 	pop	r4
 	pop	pc

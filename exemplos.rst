@@ -235,42 +235,42 @@ Histograma de vogais
 
 .. literalinclude:: code/histogram/vowel.s
    :language: c
-   :lines: 148-164
+   :lines: 149-163
    :caption: Chamada da função histogram_vowel em linguagem C
    :linenos:
    :name: vowel1
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 166-219
+   :lines: 165-218
    :caption: Chamada da função histogram_vowel em linguagem *assembly*
    :linenos:
    :name: vowel2
 
 .. literalinclude:: code/histogram/vowel.s
    :language: c
-   :lines: 103-111
+   :lines: 104-112
    :caption: Função histogram_vowel em linguagem C
    :linenos:
    :name: vowel3
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 113-144
+   :lines: 114-145
    :caption: Função histogram_vowel em linguagem *assembly*
    :linenos:
    :name: vowel4
 
 .. literalinclude:: code/histogram/vowel.s
    :language: c
-   :lines: 47-63
+   :lines: 48-64
    :caption: Função find_vowel em linguagem C
    :linenos:
    :name: vowel5
 
 .. literalinclude:: code/histogram/vowel.s
    :language: asm
-   :lines: 65-100
+   :lines: 66-101
    :caption: Função find_vowel em linguagem *assembly*
    :linenos:
    :name: vowel6

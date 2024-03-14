@@ -3,16 +3,16 @@
 	b	.
 
 _start:
-	ldr	sp, addressof_stack_top
+	ldr	sp, stack_top_addr
 	mov	r0, pc
 	add	lr, r0, #4
-	ldr	pc, addressof_main
+	ldr	pc, main_addr
 	b	.
 
-addressof_stack_top:
+stack_top_addr:
 	.word	stack_top
 
-addressof_main:
+main_addr:
 	.word	main
 
 	.text
@@ -42,12 +42,12 @@ array_end:
 	.text
 main:
 	push	lr
-	ldr	r0, addressof_array
+	ldr	r0, array_addr
 	mov	r1, #ARRAY_SIZE
 	bl	sort
 	pop	pc
 
-addressof_array:
+array_addr:
 	.word	array
 
 /*-----------------------------------------------------------------------
