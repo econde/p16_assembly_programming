@@ -137,8 +137,8 @@ por isso se utilizou a expressão ``~0`` para a inicializar.
    |                                              |        .word    10000         |
    |                                              |                               |
    |                                              |        .text                  |
-   |                                              |        mov    r0, #-4         |
-   |                                              |        movt   r0, #~0         |
+   |                                              |        mov    r0, #-4 & 0xff  |
+   |                                              |        movt   r0, #-4 >> 8    |
    |                                              |        ldr    r2, x_addr      |
    |                                              |        ldr    r1, [r2, #0]    |
    |                                              |        ldr    r2, [r2, #2]    |
@@ -179,26 +179,25 @@ dividida pela dimensão de cada elemento do *array* -- ``lsr    r1, r1, #1``.
    :align: center
    :name: function_arguments_3
 
-   +----------------------------------------------+---------------------------------------+
-   | .. code-block:: c                            | .. code-block:: asm                   |
-   |                                              |    :linenos:                          |
-   |    int16_t array[] = {-20, 0, 10, -15};      |                                       |
-   |                                              |        .data                          |
-   |    f(array, sizeof array / sizeof array[0]); |    array:                             |
-   |                                              |        .word    -20, 0, 10, -15       |
-   |                                              |    array_end:                         |
-   |                                              |                                       |
-   |                                              |        .text                          |
-   |                                              |        ldr    r0, array_addr          |
-   |                                              |        mov    r1, #array_end - array  |
-   |                                              |        lsr    r1, r1, #1              |
-   |                                              |        bl     f                       |
-   |                                              |                                       |
-   |                                              |    array_addr:                        |
-   |                                              |        .word   array                  |
-   |                                              |                                       |
-   | \(a\)                                        | \(b\)                                 |
-   +----------------------------------------------+---------------------------------------+
+   +----------------------------------------------+---------------------------------------------+
+   | .. code-block:: c                            | .. code-block:: asm                         |
+   |                                              |    :linenos:                                |
+   |    int16_t array[] = {-20, 0, 10, -15};      |                                             |
+   |                                              |        .data                                |
+   |    f(array, sizeof array / sizeof array[0]); |    array:                                   |
+   |                                              |        .word    -20, 0, 10, -15             |
+   |                                              |    array_end:                               |
+   |                                              |                                             |
+   |                                              |        .text                                |
+   |                                              |        ldr    r0, array_addr                |
+   |                                              |        mov    r1, #(array_end - array) / 2  |
+   |                                              |        bl     f                             |
+   |                                              |                                             |
+   |                                              |    array_addr:                              |
+   |                                              |        .word   array                        |
+   |                                              |                                             |
+   | \(a\)                                        | \(b\)                                       |
+   +----------------------------------------------+---------------------------------------------+
 
 
 .. rubric :: Argumentos em *stack*
@@ -239,17 +238,15 @@ Os restantes argumentos são passados nos registos R0 a R3 da forma convencional
    |    w = sum(x, y, 2, 3, z, -3);               |        .word    2000                  |
    |                                              |    z:                                 |
    |                                              |        .byte    +100                  |
-   |                                              |                                       |
-   |                                              |        .bss                           |
-   |                                              |    z:                                 |
+   |                                              |    w:                                 |
    |                                              |        .word    0                     |
    |                                              |                                       |
    |                                              |        .text                          |
-   |                                              |        mov    r0, #-3                 |
-   |                                              |        movt   r0, #~0                 |
+   |                                              |        mov    r0, #-3 &0xff           |
+   |                                              |        movt   r0, #-3 >> 8            |
    |                                              |        push   r0                      |
    |                                              |        ldr    r0, z_addr              |
-   |                                              |        ldr    r0, [r0]                |
+   |                                              |        ldrb   r0, [r0]                |
    |                                              |        lsl    r0, r0, #8              |
    |                                              |        asr    r0, r0, #8              |
    |                                              |        push   r0                      |
@@ -378,7 +375,7 @@ No caso de não serem suficientes, recorre-se à utilização de registos *calle
 
 .. literalinclude:: code/find_min/find_min.s
    :language: c
-   :lines: 78-84
+   :lines: 47-53
    :caption: Função **find_min** em linguagem C
    :linenos:
    :name: find_min3
@@ -392,7 +389,7 @@ Os registo R2 e R3 são os escolhidos para as variáveis locais **min** e **i**.
 
 .. literalinclude:: code/find_min/find_min.s
    :language: asm
-   :lines: 87-106
+   :lines: 55-73
    :caption: Função **find_min** em linguagem *assembly*
    :linenos:
    :name: find_min4
