@@ -1,45 +1,19 @@
-	.section .startup
-	b	_start
+13-15	.text
+	b	program
 	b	.
 
-_start:
+program:
 	ldr	sp, stack_top_addr
-	mov	r0, pc
-	add	lr, r0, #4
-	ldr	pc, main_addr
+	bl	main
 	b	.
 
 stack_top_addr:
-	.word	stack_top
 
-main_addr:
-	.word	main
-
-	.text
-	.data
-
-	.section .stack
-	.equ	STACK_SIZE, 1024
-	.space	STACK_SIZE
-stack_top:
-
-/*-----------------------------------------------------------------------
-#define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
-
-int16_t array[] = { 20, -3, 45, 7, 5, -9, 0, -1, 15, 2};
-
+/*
 int main() {
 	sort(array, ARRAY_SIZE(array));
 }
 */
-	.data
-array:
-	.word	20, 3, 45, 7, 5, 9, 15, 2
-array_end:
-
-	.equ	ARRAY_SIZE, (array_end - array) / 2
-
-	.text
 main:
 	push	lr
 	ldr	r0, array_addr
@@ -50,9 +24,9 @@ main:
 array_addr:
 	.word	array
 
-/*-----------------------------------------------------------------------
+/*----------------------------------------------------------------------
 void sort(<r0> int16_t a[], <r1> uint16_t dim) {
-	<r2> _Bool swapped;
+	<r2> bool swapped;
 	do {
 		swapped = false;
 		for (<r3> uint16_t i = 0; i < dim - 1; i++)
@@ -102,3 +76,30 @@ sort_for_end:
 	pop	r5
 	pop	r4
 	mov	pc, lr		; return
+
+;-----------------------------------------------------------------------
+;	Secção onde são alojadas as variáveis
+
+	.data
+/*----------------------------------------------------------------------
+#define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
+
+int16_t array[] = {20, -3, 45, 7, 5, -9, 0, -1, 15, 2};
+
+*/
+
+	.data
+array:
+	.word	20, -3, 45, 7, 5, -9, 0, -1, 15, 2
+array_end:
+
+	.equ	ARRAY_SIZE, (array_end - array) / 2
+
+;-----------------------------------------------------------------------
+;	Reserva de área de memória para Stack
+
+	.stack
+
+	.equ    STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
+stack_top:

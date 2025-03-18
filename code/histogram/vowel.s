@@ -1,51 +1,20 @@
-	.section .startup
-	b	_start
+117-;-------------------------------------------------------------------------------
+;	Secção onde é alojado o código das instruções
+
+	.text
+	b	program
 	b	.
 
-_start:
-	ldr	r0, bss_start_addr	; Preencher a secção bss com o zero
-	ldr	r1, bss_end_addr
-	mov	r2, #0
-	b	_start_bss_zero_cond
-_start_bss_zero:
-	str	r2, [r0]
-	add	r0, r0, #2
-_start_bss_zero_cond:
-	cmp	r0, r1
-	blo	_start_bss_zero
-
+program:
 	ldr	sp, stack_top_addr	; Inicializar SP no topo do stack
-
-	mov	r0, pc			; Invocar a função main sem limitação de alcance
-	add	lr, r0, #4
-	ldr	pc, main_addr
+	bl	main
 	b	.
 
 stack_top_addr:
 	.word	stack_top
-main_addr:
-	.word	main
-bss_start_addr:
-	.word	bss_start
-bss_end_addr:
-	.word	bss_end
-
-	.text
-	.rodata
-	.data
-	.bss
-bss_start:
-	.section .bss_end
-bss_end:
-
-	.stack
-	.equ	STACK_MAX_SIZE, 1024
-	.space	STACK_MAX_SIZE * 2
-stack_top:
-
 
 /*------------------------------------------------------------------------------
-int16_t find_vowel(char letter)
+int16_t which_vowel(char letter)
 {
 	switch (letter) {
 		case 'a':
@@ -64,7 +33,7 @@ int16_t find_vowel(char letter)
 }
 */
 	.text
-find_vowel:
+which_vowel:
 case_a:
 	mov	r1, #'a'	; case 'a':
 	cmp	r0, r1
@@ -105,13 +74,12 @@ void histogram_vowel(<r0> <r4> char phrase[], <r1> <r5> uint16_t max_letters,
 			<r2> <r6> uint16_t occurrences[5])
 {
 	for (<r7> uint16_t i = 0; phrase[i] != '\0' && i < max_letters ; i++ ) {
-		<r0> int16_t index = find_vowel(phrase[i];
+		<r0> int16_t index = which_vowel(phrase[i];
 		if (index != -1)
 			occurrences[idx]++;
 	}
 }
 */
-	.text
 histogram_vowel:
 	push	lr
 	push	r4
@@ -123,7 +91,7 @@ histogram_vowel:
 	mov	r7, #0		; i = 0
 	b	for_cond
 for:
-	bl	find_vowel	; phrase[i] é deixado em R0 no teste da condição do for
+	bl	which_vowel	; phrase[i] é deixado em R0 no teste da condição do for
 	add	r1, r0, #1	; (if (... != -1) (-1 + 1 == 0)
 	bzs	if_end
 	add	r0, r0, r0	; occurrences[idx]++
@@ -144,17 +112,7 @@ for_end:
 	pop	r4
 	pop	pc
 
-/*------------------------------------------------------------------------------
-
-#define SIZE 5
-
-uint16_t occurrences1[SIZE];
-uint16_t occurrences2[SIZE];
-uint16_t occurrences3[SIZE];
-
-char phrase1[] = "aeiou";
-char phrase2[] = "a ee iii oooo uuuuu";
-
+/*
 int main()
 {
 	histogram_vowel(phrase1, 15, occurrences1);
@@ -162,27 +120,7 @@ int main()
 	histogram_vowel("Hello world", 7, occurrences3);
 }
 */
-	.bss
-	.equ	SIZE, 5
 
-occurrences1:
-	.space	SIZE * 2
-occurrences2:
-	.space	SIZE * 2
-occurrences3:
-	.space	SIZE * 2
-
-	.data
-phrase1:
-	.asciz	"aeiou"
-phrase2:
-	.asciz	"a ee iii oooo uuuuu"
-
-	.rodata
-phrase3:
-	.asciz	"Hello world"
-
-	.text
 main:
 	push	lr
 
@@ -216,3 +154,42 @@ occurrences2_addr:
 	.word	occurrences2
 occurrences3_addr:
 	.word	occurrences3
+
+;-------------------------------------------------------------------------------
+;	Secção onde são alojadas as variáveis
+
+/*------------------------------------------------------------------------------
+
+#define SIZE 5
+
+uint16_t occurrences1[SIZE];
+uint16_t occurrences2[SIZE];
+uint16_t occurrences3[SIZE];
+
+char phrase1[] = "aeiou";
+char phrase2[] = "a ee iii oooo uuuuu";
+
+*/
+	.data
+	.equ	SIZE, 5
+
+occurrences1:
+	.space	SIZE * 2
+occurrences2:
+	.space	SIZE * 2
+occurrences3:
+	.space	SIZE * 2
+
+phrase1:
+	.asciz	"aeiou"
+phrase2:
+	.asciz	"a ee iii oooo uuuuu"
+phrase3:
+	.asciz	"Hello world"
+
+;-------------------------------------------------------------------------------
+;	Reserva de área de memória para Stack
+	.stack
+	.equ	STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
+stack_top:

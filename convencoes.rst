@@ -428,7 +428,7 @@ o conteúdo destes registos caso necessitem de os utilizar.
 
 .. literalinclude:: code/array_square/array_square.s
    :language: c
-   :lines: 62-67
+   :lines: 34-39
    :caption: Função **array_square** em linguagem C
    :linenos:
    :name: array_square3
@@ -445,7 +445,7 @@ de qualquer ação de preservação dos seus conteúdos.
 
 .. literalinclude:: code/array_square/array_square.s
    :language: asm
-   :lines: 69-94
+   :lines: 41-66
    :caption: Função **array_square** em linguagem *assembly*
    :linenos:
    :name: array_square4

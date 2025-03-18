@@ -1,48 +1,21 @@
-   	.section .startup
-   	b	_start
-   	b	.
+	.text
+	b	program
+	b	.
 
-   _start:
-   	ldr	sp, stack_top_addr
-   	mov	r0, pc
-   	add	lr, r0, #4
-   	ldr	pc, main_addr
-   	b	.
+program:
+	ldr	sp, stack_top_addr
+	mov	r0, pc
+	add	lr, r0, #4
+	ldr	pc, main_addr
+	b	.
 
-   stack_top_addr:
-   	.word	stack_top
+stack_top_addr:
+	.word	stack_top
 
-   main_addr:
-   	.word	main
+main_addr:
+	.word	main
 
-   	.text
-   	.data
-	.bss
-
-	.stack
-	.space	128
-stack_top:
-
-/*------------------------------------------------------
-uint8_t m = 20, n = 3;
-
-uint16_t p, q;
-
-*/
-
-	.data
-m:
-	.byte	20
-n:
-	.byte	3
-
-	.bss
-p:
-	.word	0
-q:
-	.word	0
-
-/*------------------------------------------------------
+/*----------------------------------------------------------------------
 int main() {
 	q = 4 * 7;
 	p = m * n;
@@ -108,3 +81,33 @@ mul_if_end:
 mul_return:
 	mov	r0, r2
 	mov	pc, lr		; <r0> return product;
+
+;-----------------------------------------------------------------------
+;	Secção onde são alojadas as variáveis
+
+	.data
+/*----------------------------------------------------------------------
+uint8_t m = 20, n = 3;
+
+uint16_t p, q;
+
+*/
+
+m:
+	.byte	20
+n:
+	.byte	3
+p:
+	.word	0
+q:
+	.word	0
+
+;-----------------------------------------------------------------------
+;	Reserva de área de memória para Stack
+
+	.stack
+
+	.equ    STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
+stack_top:
+	

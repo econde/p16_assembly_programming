@@ -3,10 +3,10 @@
 
 	.text
 
-	b	_start
+	b	program
 	b	.
 
-_start:
+program:
 	ldr	sp, stack_top_addr
 	bl	main
 	b	.
@@ -88,9 +88,6 @@ mul_return:
 ;	Secção onde são alojadas as variáveis
 
 	.data
-
-;	Definição das variáveis do programa
-
 /*
 uint8_t m = 20, n = 3;
 
