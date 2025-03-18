@@ -1,48 +1,21 @@
-	.section .startup
-	b	_start
+	.text
+	b	program
 	b	.
 
-_start:
+program:
 	ldr	sp, stack_top_addr
-	mov	r0, pc
-	add	lr, r0, #4
-	ldr	pc, main_addr
+	bl	main
 	b	.
 
 stack_top_addr:
 	.word	stack_top
 
-main_addr:
-	.word	main
-
-	.text
-	.data
-
-	.section .stack
-	.equ	STACK_SIZE, 1024
-	.space	STACK_SIZE
-stack_top:
-
-/*-------------------------------------------------------------
-uint16_t a = 8;
-uint16_t fa, fb;
-
+/*---------------------------------------------------------
 int main() {
     fa = factorial(a);
     fb = factorial(9);
 }
 */
-	.data
-a:
-	.word	8
-
-	.bss
-fa:
-	.word	0
-fb:
-	.word	0
-
-	.text
 main:
 	push	lr
 
@@ -134,3 +107,29 @@ multiply_return:
 	mov	r1, r4
 	pop	r4
 	mov	pc, lr
+
+;-----------------------------------------------------------------------
+;	Secção onde são alojadas as variáveis
+
+	.data
+/*----------------------------------------------------------------------
+uint16_t a = 8;
+
+uint16_t fa, fb;
+
+*/
+a:
+	.word	8
+fa:
+	.word	0
+fb:
+	.word	0
+
+;---------------------------------------------------------
+;	Reserva de área de memória para Stack
+
+	.stack
+
+	.equ    STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
+stack_top:

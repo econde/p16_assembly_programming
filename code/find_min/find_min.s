@@ -1,53 +1,22 @@
-	.section .startup
-	b	_start
+	.text
+	b	program
 	b	.
 
-_start:
+program:
 	ldr	sp, stack_top_addr
-	mov	r0, pc
-	add	lr, r0, #4
-	ldr	pc, main_addr
+	bl	main
 	b	.
 
 stack_top_addr:
 	.word	stack_top
 
-main_addr:
-	.word	main
-
-	.text
-	.data
-
-	.stack
-	.space	128
-stack_top:
-
-/*----------------------------------------------------------------
-	uint16_t table1[] = {10, 20, 5, 6, 34, 9};
-	uint16_t table2[] = {11, 22, 33};
-	int16_t p, q;
-
+/*---------------------------------------------------------
 	int main() {
 		p = find_min(table1, sizeof table1 / sizeof table1[0]);
 		q = find_min(table2, sizeof table2 / sizeof table2[0]);
 	}
 */
-	.data
-table1:
-	.word	10, 20, 5, 6, 34, 9
-table1_end:
 
-table2:
-	.word	11, 22, 33
-table2_end:
-
-	.bss
-p:
-	.word	0
-q:
-	.word	0
-
-	.text
 main:
 	push	lr
 
@@ -83,15 +52,13 @@ q_addr:
 	return min;
 }
 */
-
-	.text
 find_min:
 	push	r4
 	ldr	r2, [r0]	; min = array[0];
 	mov	r3, #0		; i = 0
 find_min_for:
 	cmp	r3, r1		; i < array_size
-	bhs	search_for_end
+	bhs	find_min_for_end
 	add	r4, r3, r3
 	ldr	r4, [r0, r4]	; if (array[i] < min)
 	cmp	r4, r2
@@ -104,3 +71,34 @@ find_min_for_end:
 	mov	r0, r2		; return min
 	pop	r4
 	mov	pc, lr
+
+;-----------------------------------------------------------------------
+;	Secção onde são alojadas as variáveis
+
+	.data
+/*----------------------------------------------------------------
+	uint16_t table1[] = {10, 20, 5, 6, 34, 9};
+	uint16_t table2[] = {11, 22, 33};
+	int16_t p, q;
+*/
+table1:
+	.word	10, 20, 5, 6, 34, 9
+table1_end:
+
+table2:
+	.word	11, 22, 33
+table2_end:
+
+p:
+	.word	0
+q:
+	.word	0
+
+;-----------------------------------------------------------------------
+;	Reserva de área de memória para Stack
+
+	.stack
+
+	.equ    STACK_MAX_SIZE, 1024
+	.space	STACK_MAX_SIZE * 2
+stack_top:

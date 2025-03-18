@@ -325,28 +325,28 @@ Chamada recursiva
 
 .. literalinclude:: code/factorial/factorial.s
    :language: c
-   :lines: 27-33
+   :lines: 116-119,14-17
    :caption: Chamada da função factorial em linguagem C
    :linenos:
    :name: factorial_sort1
 
 .. literalinclude:: code/factorial/factorial.s
    :language: asm
-   :lines: 35-67
+   :lines: 114,121-127,1,19-40
    :caption: Chamada da função factorial em linguagem *assembly*
    :linenos:
    :name: factorial_sort2
 
 .. literalinclude:: code/factorial/factorial.s
    :language: c
-   :lines: 71-78
+   :lines: 44-51
    :caption: Função factorial em linguagem C
    :linenos:
    :name: factorial_sort3
 
 .. literalinclude:: code/factorial/factorial.s
    :language: asm
-   :lines: 80-101
+   :lines: 55-74
    :caption: Função factorial em linguagem *assembly*
    :linenos:
    :name: factorial_sort4
