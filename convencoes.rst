@@ -66,7 +66,8 @@ ocupando a quantidade necessária, por ordem: R0, R1, R2 e R3. ::
    void f(uint16_t a,  int8_t b,  uint8_t c,  char d);
                   r0         r1          r2       r3
 
-Os argumentos de parâmetros dos tipos representados a 8 *bits*
+
+Os argumentos dos parâmetros de tipos representados a 8 *bits*
 -- char, uint8_t ou int8_t -- são convertidos para representação a 16 *bits*.
 
 .. table:: Passagem de argumentos de vários tipos

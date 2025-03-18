@@ -10,7 +10,7 @@ As variáveis são representadas em registos do processador.
 Afetação
 --------
 Considerando que as variáveis **a** e  **b** se encontram representadas nos registos R0 e R1,
-afetar **a** com **b** corresponde a executar a instrução **mov rd, rs**
+afetar **a** com **b** corresponde a executar a instrução **mov r0, r1**
 que copia o conteúdo do registo R1 para R0.
 
 .. table:: Afetação de variável com outra variável
@@ -58,8 +58,8 @@ na parte menos significativa do registo e zero na parte mais significativa;
 a instrução **movt  rd, #constant** que carrega um valor de 8 *bits*
 na parte mais significativa do registo e mantém o conteúdo da parte menos significativa.
 
-Para carregar valores numéricos entre 0 e 255 pode utilizar-se apenas uma instrução **mov**,
-para valores maiores utiliza-se uma sequência **mov - movt**.
+Para carregar valores numéricos entre 0 e 255 pode utilizar-se apenas uma instrução **mov**.
+Para valores superiores até 0xffff, utiliza-se uma sequência **mov - movt**.
 
 .. table:: Afetação com constante
    :widths: auto
@@ -86,10 +86,10 @@ para valores maiores utiliza-se uma sequência **mov - movt**.
    +--------+----------------------------------+----------------------------------+
    |        | .. code-block:: c                | .. code-block:: asm              |
    |        |                                  |                                  |
-   |        |    #define   VALUE -2000         |    ;a = r0                       |
-   | \(d\)  |    int16_t a;                    |    .equ VALUE, -2000             |
+   |        |    #define   VALUE -2024         |    ;a = r0                       |
+   | \(d\)  |    int16_t a;                    |    .equ VALUE, -2024             |
    |        |                                  |    mov  r0, #VALUE & 0xff        |
-   |        |    a = VALUE;                    |    movt r0, #(VALUE >> 8) & 0xff |
+   |        |    a = VALUE;                    |    movt r0, #VALUE >> 8          |
    +--------+----------------------------------+----------------------------------+
 
 :numref:`afetacao_constante` (a) – carregamento de valor positivo inferior a 256;
@@ -109,7 +109,19 @@ no domínio de representação do tipo int16_t ou uint16_t.
 A diretiva ``.equ VALUE, -2000`` significa que no texto do programa,
 onde aparece ``VALUE`` pode ler-se ``-2000``.
 Este valor tem uma representação a 16 *bits* equivalente a 0xf830.
-A expressão ``VALUE & 0xff`` é igual a 0x30 e a expressão ``(VALUE >> 8) & 0xff`` é igual 0xf8.
+A expressão ``VALUE & 0xff`` é igual a 0x30 e a expressão ``VALUE >> 8`` é igual 0xf8.
+
+Note que a ordem das instruções *mov* e *movt* não pode ser invertida.
+
+Na linguagem *assembly* do P16 uma constante é representada a 16 *bits*.
+Para efeitos de operações é considerado um valor do conjunto dos números naturais de 0 a 65535.
+
+No exemplo :numref:`afetacao_constante` (d) na expressão -2024 >> 8,
+o valor -2024 é representado em binário por 1111'1000'0001'1000
+e operado como um número natural. O resultado obtido é 0000'0000'1111'1000.
+
+0xf818 >> 8 = 0x00f8 (encarando 0xf818 como número natural).
+0xf818 >> 8 = 0xfff8 (encarando 0xf818 como número relativo).
 
 Operações aritméticas
 ---------------------
@@ -147,20 +159,22 @@ Adição
    +--------+----------------------------------+----------------------------------+
 
 Na :numref:`adicao_simples` apresenta-se a programação da adição de variáveis --
-no caso (a), variáveis para números relativos e no caso (b), variáveis para números naturais.
+no caso (a) variáveis com números relativos e no caso (b) variáveis com números naturais.
 Ao nível da máquina ambas as operação são realizadas exatamente da mesma forma
 pela instrução  **add  rd, rn, rm**. A diferença está na forma como se interpretam
 os operandos e os resultados.
 
 No caso dos números naturais, os valores são representados diretamente em binário.
 Nos registos apenas podem ser representados valores no domínio :math:`0` a :math:`2^{16} - 1`.
-Se o resultado ultrapassar este domínio é assinalado arrasto na *flag* Carry, que fica com valor 1.
+Se o resultado ultrapassar este domínio é assinalado arrasto na *flag* **Carry**, que fica com valor 1.
 
 No caso dos números relativos, os valores são representados em código dos complementos.
 Nos registos apenas podem ser representados valores no domínio :math:`-2^{15}` a :math:`+2^{15} - 1`.
 No caso do resultado ultrapassar este domínio,
-o que pode aconter se os operandos forem ambos positivos ou ambos negativos,
-é assinalado erro na *flag* Overflow, que fica com o valor 1.
+é assinalado erro na *flag* **Overflow**, que fica com o valor 1.
+Isso pode aconteccer se os operandos forem ambos positivos e o resultado for superior a :math:`+2^{15} - 1`
+ou ambos negativos e o resultado for inferior a  :math:`-2^{15}`.
+
 
 .. _operacao subtracao:
 
@@ -190,21 +204,22 @@ Na :numref:`subtracao` apresenta-se a programação da subtração
 de variáveis.
 
 A instrução **sub  rd, rn, rm** afeta o registo **rd**
-com o valor do registo **rn** menos o valor do registo **rm**. Além disso afeta também a *flag* C com informação de arrasto.
+com o valor do registo **rn** menos o valor do registo **rm**.
+Além disso afeta também a *flag* Carry com a informação de arrasto.
 
 Para interpretar o funcionamento da instrução SUB,
-pode aplicar-se o seguinte modelo: como resultado da instrução **sub**,
+pode aplicar-se o seguinte modelo:
 o registo **rd** recebe a soma do valor do registo **rn**
 com o complemento para :math:`2^{16}` do valor do registo **rm** e
-a *flag* C recebe o arrasto produzido por esta adição.
+a *flag* Carry recebe o arrasto produzido por esta adição.
 
 No caso do valor de **rn** ser maior que o valor de **rm**,
 a operação de subtração não produziria arrasto (*borrow*).
-No entanto, nesta relação de valores, a adição do complemento de **rm** com **rn** produz arrasto (*carry*)
-e a *flag* C firará com 1.
+Nesta relação de valores, a adição do complemento de **rm** com **rn** produz arrasto (*carry*)
+e a *flag* Carry ficará com 1.
 
 Se, pelo contrário, o valor de **rn** for menor que o valor de **rm**,
-a operação de subtração produziria arrasto (*borrow*), mas a *flag* C ficará com 0.
+a operação de subtração produziria arrasto (*borrow*), mas a *flag* Carry ficará com 0.
 
 Expressão com adição e subtração
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -219,7 +234,7 @@ Expressão com adição e subtração
    |                                  |                                      |
    |    int16_t a, b, c, d;           |    ; a = r0  b = r1  c = r2  d = r3  |
    |                                  |    add   r0, r2, r1                  |
-   |    a = c + b – d;                |    sub   r0, r0, r3                  |
+   |    a = c + b - d;                |    sub   r0, r0, r3                  |
    +----------------------------------+--------------------------------------+
 
 A instrução ``add  r0, r2, r1`` adiciona as variáveis **c** e **b** (R2 e R1, respetivamente)
@@ -255,6 +270,10 @@ afetando R0 com o resultado e a *flag* Carry com o arrasto.
 No segundo passo a instrução ``adc  r1, r3, r5`` adiciona as partes mais significativas
 das variáveis com o arrasto produzido na adição anterior.
 
+A instrução ADC também afeta a *flag* Carry com o arrasto produzido.
+O que permite utilizar sucessivamente esta instrução
+na operação parcial de valores representados com maior número de *bits*.
+
 Subtração a 32 *bits*
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -271,11 +290,11 @@ Subtração a 32 *bits*
    |    c = a - b;                    |    sbc   r5, r1, r3                     |
    +----------------------------------+-----------------------------------------+
 
-À semelhança da adição a 32 *bits*, é utilizada a combinação das instruções SUB e SBC.
+À semelhança da adição a 32 *bits*, na subtração a 32 *bits* é utilizada a combinação das instruções SUB e SBC.
 A instrução ``sub  r4, r0, r2`` opera as partes menos significativas subtraindo R2 a R0.
 R4 é afetado com a diferença e a *flag* C com informação de arrasto (ver :ref:`operacao subtracao`).
 
-A instrução ``sbc  r5, r1, r3`` opera as partes mais significativas, subtraindo R3 ou R3 - 1 a R1.
+A instrução ``sbc  r5, r1, r3`` opera as partes mais significativas, subtraindo R3 + (1 - C) a R1.
 R5 é afetado com a diferença e a *flag* C com informação de arrasto,
 como na instrução SUB.
 
@@ -307,6 +326,22 @@ Deslocar à direita
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Deslocar um valor para a direita equivale a
 dividir esse valor por dois elevado ao número de posições deslocadas.
+
+``a >> 3`` é equivalente a :math:`a / 2^3 = a / 8`
+
+As instruções para operar deslocações à direita são LSR e ASR.
+A primeira insere o valor zero nas posições de maior peso -- destina-se a operar números naturais.
+A segunda mantém o valor do *bit* de maior peso (*bit* de sinal) -- destina-se a operar números relativos.
+O último *bit* de menor peso a ser deslocado fica retido na *flag* Carry.
+
++--------------------------------------+--------------------------------------+
+|.. figure:: figures/lsr.png           |.. figure:: figures/asr.png           |
+|   :name: lsr                         |   :name: asr                         |
+|   :align: center                     |   :align: center                     |
+|   :scale: 80%                        |   :scale: 80%                        |
+|                                      |                                      |
+|   Funcionamento da instrução LSR.    |   Funcionamento da instrução ASR.    |
++--------------------------------------+--------------------------------------+
 
 .. table:: Deslocar um valor para a direita
    :widths: auto
@@ -345,6 +380,19 @@ Deslocar à esquerda
 ^^^^^^^^^^^^^^^^^^^
 Deslocar um valor para a esquerda equivale
 a multiplicar esse valor por dois elevado ao número de posições deslocadas.
+
+``a << 5`` é equivalente a :math:`a * 2^5 = a * 32`
+
+A instrução para operar deslocações à esquerda é LSL.
+O último *bit* de maior peso a ser deslocado fica registado na *flag* Carry.
+Insere zero no(s) *bit(s)* de menor peso.
+
+.. figure:: figures/lsl.png       
+   :name: lsl                     
+   :align: center                 
+   :scale: 80%                    
+                                  
+   Funcionamento da instrução LSL.
 
 .. table:: Deslocar um valor para a esquerda
    :widths: auto
@@ -388,6 +436,20 @@ os *bits* que saem das posições de menor peso;
 rodar uma palavra para a esquerda significa inserir nas posições de menor peso
 os bits que saem das posições de maior peso.
 
+A instrução para rodar um valor é ROR.
+Esta instrução roda para o conteúdo de um registo para a direita, o número de posições indicado.
+
+.. figure:: figures/ror.png       
+   :name: ror                     
+   :align: center                 
+   :scale: 80%                    
+                                  
+   Funcionamento da instrução ROR.
+
+No P16 não existe instrução específica para rodar à esquerda.
+O efeito de rodar à esquerda pode ser obtido rodando à direita um número complementar de posições.
+Veja-se o segundo exemplo da :numref:`rotacao_valores`.
+
 .. table:: Rotação de valores
    :widths: auto
    :align: center
@@ -419,7 +481,7 @@ deslocando uma posição em cada iteração (linha 5).
 
 A solução apresentada na :numref:`variable_shift` (c) executa o deslocamento em
 quatro passos (instruções ``lsl r0, r0, #X`` (linhas 4, 8, 12 e 16).
-Em cada passo deslocar deslocar uma, duas, quatro ou oito posições,
+Em cada passo desloca condicionalmente uma, duas, quatro ou oito posições,
 perfazendo um máximo de quinze posições.
 
 O número de posições a deslocar é representado pelos quatro *bits* de menor peso de R1.
@@ -512,8 +574,8 @@ ou o valor 0 quando operado com 0 em R1 -- elemento absorvente.
    +----------------------------------+-------------------------------------+
 
 
-Afetar um *bit* de variável com o *bit* de outra variável
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Afetar um *bit* de uma variável com o *bit* de outra variável
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Afetar o *bit* de peso quatro da variável **a**
 com o valor do *bit* de peso treze da variável **b**, mantendo os restantes *bits*.
@@ -544,7 +606,7 @@ sem recurso a instrução de multiplicação
 ou a programa genérico de multiplicação.
 Veja-se o seguinte exemplo:
 
-a * 21 = a * (16 + 4 + 1) = a * 16 + a * 4 + a * 1
+:math: `a * 21 = a * (16 + 4 + 1) = a * 16 + a * 4 + a * 1`
 
 A constante 21 é decomposta em parcelas de valor igual a potências de dois.
 As multiplicações parciais são realizadas por instruções de deslocamento.
@@ -581,14 +643,14 @@ Na conversão de tipo cujo domínio de representação está contido no domínio
 de representação do tipo destino --
 representação com menos *bits* para representação com mais *bits* --
 não há perda de informação.
-Para manter a mesma representação numérica os *bits* de maior peso
+Para manter a mesma representação numérica, os *bits* de maior peso
 recebem o valor zero no caso de valores naturais
 ou o valor do *bit* de sinal no caso de valores relativos.
 
 Nos exemplos da :numref:`convert_to_wider` a conversão de 8 para 16 *bits* dá-se
 ao carregar as constantes nos registos do processador.
 Como o P16 realiza apenas operações a 16 *bits*,
-os valores originalmente representados 8 *bits* devem ser representados a 16 *bits*
+os valores originalmente representados a 8 *bits* devem ser representados a 16 *bits*
 ao serem carregados nos registos do processador.
 
 Nos casos  (a) e (b) da :numref:`convert_to_wider`, o aumento para 16 *bits*
@@ -598,7 +660,7 @@ que afetam a parte alta de R0 com zero.
 
 Nos casos (c) e (d) da :numref:`convert_to_wider`, o aumento para 16 *bits*
 consiste em propagar o *bit* de sinal para a parte alta do destino. No caso (c)
-a parte alta de R0 recebe 0xff porque se trata de representar o valor -3.
+a parte alta de R0 recebe 0xff porque se trata de carregar a constante -3.
 No caso (d) a parte alta da variável, representada em R2, recebe em todas
 as posições um valor igual ao *bit* de maior peso de R0 (*bit* de sinal do valor original).
 
@@ -641,8 +703,8 @@ as posições um valor igual ao *bit* de maior peso de R0 (*bit* de sinal do val
 Conversão com perda de informação
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Na conversão de tipo cujo domínio de representação é diferente
-do domínio de representação do tipo destino, pode haver perda de informação.
+Na conversão de tipo cujo domínio de representação é superior
+ao domínio de representação do tipo destino, pode haver perda de informação.
 Para o evitar cabe ao programador garantir
 que o valor a converter é representável no domínio do tipo destino.
 

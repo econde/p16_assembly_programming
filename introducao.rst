@@ -1,7 +1,7 @@
 Introdução
 ==========
 
-   Nestas notas exemplifica-se a utilização de linguagem *assembly* para o P16
+   Nestas notas exemplifica-se a utilização da linguagem *assembly* do P16
    na programação de abstrações de linguagem de alto nível presentes na linguagem C.
    Designadamente:
 

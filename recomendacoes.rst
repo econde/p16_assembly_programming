@@ -13,10 +13,10 @@ e que são aplicadas nos programas de exemplo.
   usa-se como separador o carácter ‘_’ (sublinhado).
 
 * O programa é disposto na forma de uma tabela de quatro colunas.
-  Na primeira coluna insere-se apenas a *label* (se existir),
-  na segunda coluna a mnemónica da instrução ou a diretiva,
-  na terceira coluna os parâmetros da instrução ou da diretiva
-  e na quarta coluna os comentários até ao fim da linha
+  Na primeira coluna insere-se apenas a *label*, se existir;
+  na segunda coluna a mnemónica da instrução ou a diretiva;
+  na terceira coluna os parâmetros da instrução ou da diretiva;
+  na quarta coluna os comentários até ao fim da linha
   (começados por \';\' ou envolvidos por /\* \*/).
 
 * Cada linha contém apenas uma label, uma instrução ou uma diretiva.

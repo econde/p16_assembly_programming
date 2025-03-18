@@ -34,17 +34,17 @@ pode também ser avaliado como booleano, segundo o mesmo critério.
    | \(a\)                  | \(a\)                  | \(b\)                | \(c\)                  |
    +------------------------+------------------------+----------------------+------------------------+
 
-Na :numref:`bool_test`,  no que concerne à expressão do *if*,
-o código da coluna (a) trata de avaliar ser a variável ``a`` tem o valor ``true`` ou ``false``.
-Nas colunas (b) e (c), trata de avaliar ser a variável ``a`` é igual ou diferente de zero.
+Na :numref:`bool_test`,  no que concerne à condição do *if*,
+o código da coluna (a) trata de avaliar se a variável **a** tem o valor ``true`` ou ``false``.
+Nas colunas (b) e (c), trata de avaliar ser a variável **a** é igual ou diferente de zero.
 O que é equivalente, segundo o critério de representação dos valores booleanos.
 
-A instrução ``add   r0, r0, #0`` ao adicionar zero a R0 não altera o valor original
-mas afeta a flag Z em conformidade com o valor de **a**.
+A instrução ``add   r0, r0, #0`` ao adicionar zero a R0 não altera o seu valor original
+mas afeta a flag Z em conformidade com o valor de **a**
 -- se **a** for zero a *flag* Z recebe 1; se **a** for diferente de zero a *flag* Z recebe 0.
 A *flag* Z é afetada com o valor contrário ao valor booleano da expressão.
 
-As operações de comparação (==, !=, <, >, <=, >=) produzem valores booleanos -- ``true`` ou ``false``.
+As operações de comparação ( ==, !=, <, >, <=, >= ) produzem valores booleanos -- ``true`` ou ``false``.
 
 Em linguagem C, um valor booleano pode ser afetado a uma variável de qualquer tipo numérico
 ou ser operado com operadores numéricos.
@@ -160,7 +160,7 @@ tem o nome alternativo BEQ (*Branch if Equal*).
 
 No programa da :numref:`compare_less_than` a instrução ``mov  r2, r0``, correspondente a ``c = a``,
 não deve ser executada se **a** for maior ou igual a **b**.
-A instrução ``cmp  r0, r1`` ao realizar a subtração de R1 a R0
+A instrução ``cmp  r0, r1`` ao realizar a subtração de R1 a R0 (R0 - R1)
 afeta a *flag* C com 0 se **a** for menor que **b**
 e afeta a *flag* C com 1 se **a** for maior ou igual a **b**.
 A *flag* C assume o valor contrário ao do arrasto da subtração da posição de peso 16
@@ -170,9 +170,9 @@ que é o que resulta da utilização da instrução ``bcs  if_end`` (*Branch if 
 Esta instrução transfere a execução para a posição do programa indicada pela *label* ``if_end`` se a *flag* C for 1.
 
 A instrução BCS tem o nome alternativo BHS (*Branch if Higher or Same*).
-Onde está a ``bcs  if_end`` poderia estar ``bhs  if_end``.
+Onde está ``bcs  if_end`` poderia estar ``bhs  if_end``.
 A mnemónica HS corresponde à *flag* C ser 1,
-o que acontece se numa instrução CMP ou SUB se o subtraendo for maior ou igual ao subtrator.
+o que acontece se numa instrução CMP ou SUB o subtraendo for maior ou igual ao subtrator.
 
 A sequência ::
 
@@ -180,7 +180,7 @@ A sequência ::
    bhs  label
 
 pode ter a seguinte leitura:
-a instrução BHS realiza "salto" se **rm** for maior ou igual que **rn**.
+a instrução BHS realiza "salto" se **rm** for maior ou igual a **rn**.
 
 .. table:: Comparação \"maior que\".
    :widths: auto

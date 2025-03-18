@@ -28,20 +28,19 @@ O tipo ``char`` considera-se equivalente a ``unsigned char``.
 Dados em memória
 ----------------
 
-Os valores de tipos representados com palavras de 8 *bits*
+Os valores representados com palavras de 8 *bits*
 podem ser alojados em qualquer posição da memória.
 
-Os valores de tipos representados com palavras de dois *bytes*,
+Os valores representados com palavras de 16 *bits*,
 ocupam duas posições de memória contíguas.
-
-A posição de memória de endereço mais baixo deve ser par -- designa-se alinhamento par.
+A posição de memória de endereço menor deve ser par -- designa-se alinhamento par.
 Na referenciação por endereço de uma palavra de múltiplos *bytes*, utiliza-se
 o endereço menor.
 
-Por exemplo, na :numref:`memory_types` a palavra que suporta a representação da variável **h**,
-ocupa duas posições de memória, possui alinhamento par e o seu endereço é **0x0006**.
+Por exemplo, na :numref:`memory_types` a palavra de 16 *bits* que suporta a representação da variável **h**,
+ocupa duas posições de memória, possui alinhamento par e o seu endereço é **0x1006**.
 
-.. figure:: figures/memory_types.png
+.. figure:: figures/memory_types.svg
    :name: memory_types
    :align: center
 
@@ -50,7 +49,7 @@ ocupa duas posições de memória, possui alinhamento par e o seu endereço é *
 Dados em registo
 ----------------
 
-As instruções do P16 operam sobre valores a 16 *bits*.
+As instruções do P16 operam sobre palavras de 16 *bits*.
 Ao carregar um valor a 8 *bits* (tipos ``char``, ``int8_t`` ou ``uint8_t``)
 num registo do processador, é necessário extender a representação desse valor
 para 16 *bits*.
